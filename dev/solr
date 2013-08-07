@@ -1,0 +1,83 @@
+#!/bin/sh -e
+# SOLR auto-start
+#
+# description: auto-starts solr engine
+# processname: solr-production
+# pidfile: /var/run/solr.pid
+# logfile: /var/log/solr.log
+# max Java memory is 80% of system memory
+ 
+NAME="solr"
+PIDFILE="/var/run/${NAME}.pid"
+LOG_FILE="/var/log/${NAME}.log"
+SOLR_DIR="/kb/runtime/solr/example"
+TOT_MEM=`free -m | awk '/Mem:/ { print $2 }'`
+JAVA_MEM=`echo "${TOT_MEM} * 0.8" | bc | cut -f1 -d"."`
+JAVA_OPTIONS="-Xms1024M -Xmx${JAVA_MEM}M -DSTOP.PORT=8079 -DSTOP.KEY=stopkey -jar start.jar"
+JAVA=`which java`
+
+start() {
+    if [ -n "$1" ]; then
+	JAVA_OPTIONS="-DDEBUG=true $JAVA_OPTIONS"
+	echo "Running in debug mode"
+    fi
+    echo -n "Starting $NAME... "
+    if [ -f $PIDFILE ]; then
+	echo "is already running!"
+    else
+	cd $SOLR_DIR
+	$JAVA $JAVA_OPTIONS > $LOG_FILE 2>&1 &
+	sleep 2
+	echo `ps -ef | grep -v grep | grep java | awk '{print $2}'` > $PIDFILE
+	echo "(Done)"
+    fi
+    return 0
+}
+ 
+stop() {
+    echo -n "Stopping $NAME... "
+    if [ -f $PIDFILE ]; then
+	cd $SOLR_DIR
+	$JAVA $JAVA_OPTIONS --stop
+	sleep 2
+	rm $PIDFILE
+	echo "(Done)"
+    else
+	echo "can not stop, it is not running!"
+    fi
+    return 0
+}
+
+status() {
+    if [ -f $PIDFILE ]; then
+	PIDN=`cat $PIDFILE`
+	echo "$NAME is running with pid $PIDN."
+    else
+	echo "$NAME is not running."
+    fi
+    return 0
+}
+
+case "$1" in
+    debug)
+	start 1
+	;;
+    start)
+	start
+	;;
+    stop)
+	stop
+	;;
+    restart)
+	stop
+	sleep 5
+	start
+	;;
+    status)
+	status
+	;;
+    *)
+	echo "Usage: $0 (debug | start | stop | restart | status)"
+	exit 1
+	;;
+esac
