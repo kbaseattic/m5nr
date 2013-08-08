@@ -4,6 +4,8 @@ use strict;
 use warnings;
 no warnings('once');
 
+use JSON;
+use LWP::UserAgent;
 use URI::Escape;
 use Digest::MD5;
 use M5NR_Conf;
@@ -15,7 +17,6 @@ sub new {
     # set variables
     my $agent = LWP::UserAgent->new;
     my $json  = JSON->new;
-    my $url_id = get_url_id($params->{cgi}, $params->{resource}, $params->{rest_parameters}, $params->{json_rpc}, $params->{user});
     $json = $json->utf8();
     $json->max_size(0);
     $json->allow_nonref;

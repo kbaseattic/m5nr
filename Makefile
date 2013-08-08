@@ -35,7 +35,7 @@ all: deploy
 deploy: deploy-client deploy-service
 
 deploy-client: deploy-scripts
-	@echo "Client tool deployed"
+	@echo "Client tools deployed"
 
 # to wrap scripts and deploy them to $(TARGET)/bin using tools in
 # the dev_container. right now, these vars are defined in
@@ -58,11 +58,12 @@ deploy-scripts:
 deploy-service:
 	-mkdir -p $(SERVICE_DIR)
 	-mkdir -p $(SERVICE_DIR)/api
-	cp api/* $(SERVICE_DIR)/api/.
-	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api conf/nginx.conf.tt > /etc/nginx/sites-available/default
-	echo "restarting nginx ..."
-	/etc/init.d/nginx restart
-	/etc/init.d/nginx force-reload
+	cp api/m5nr.pm $(SERVICE_DIR)/api/m5nr.pm
+	$(TPAGE) --define perl_path=$(DEPLOY_RUNTIME)/bin/perl api/m5nr.cgi > $(SERVICE_DIR)/api/m5nr.cgi
+	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api conf/apache.conf.tt > /etc/apache2/sites-available/default
+	echo "restarting apache ..."
+	/etc/init.d/nginx stop
+	/etc/init.d/apache2 restart
 	echo "done executing deploy-service target"
 
 deploy-dev: install-solr load-m5nr

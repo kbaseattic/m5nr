@@ -1,9 +1,0 @@
-server {
-	root [% m5nr_dir %];
-	index m5nr.cgi;
-	server_name localhost;
-
-	location / {
-		try_files $uri $uri/ /m5nr.cgi;
-	}
-}

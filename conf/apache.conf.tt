@@ -1,0 +1,36 @@
+<VirtualHost *:80>
+	ServerAdmin webmaster@localhost
+
+	<Files ~ "\.(pl|cgi)$">
+        Options +ExecCGI
+    </Files>
+
+	DocumentRoot [% m5nr_dir %]
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride None
+	</Directory>
+
+	ScriptAlias /cgi-bin/ [% m5nr_dir %]
+	<Directory "[% m5nr_dir %]">
+		AllowOverride None
+		Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+		AddHandler cgi-script .pl .cgi
+		Order allow,deny
+		Allow from all
+	</Directory>
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	LogLevel warn
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    Alias /doc/ "/usr/share/doc/"
+    <Directory "/usr/share/doc/">
+        Options Indexes MultiViews FollowSymLinks
+        AllowOverride None
+        Order deny,allow
+        Deny from all
+        Allow from 127.0.0.0/255.0.0.0 ::1/128
+    </Directory>
+
+</VirtualHost>
