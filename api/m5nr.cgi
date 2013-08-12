@@ -130,10 +130,10 @@ if ($resource) {
             $resource_obj->request();
         };
         if ($@) {
-            print $cgi->header( -type => 'text/plain',
+            print $cgi->header( -type => 'application/json',
 			                    -status => 500,
 			                    -Access_Control_Allow_Origin => '*' );
-			print $json->encode( {"ERROR"=> "resource request failed\n$@\n"} );
+			print $json->encode( {"ERROR"=> "resource '$resource' request failed\n$@\n"} );
             exit 0;
         }
     }

@@ -24,6 +24,7 @@ test: test-service test-client test-scripts
 test-client:
 	@echo "testing client (m5nr API) ..."
 	test/test_web.sh localhost/m5nr.cgi client
+	test/test_web.sh localhost/m5nr.cgi/m5nr m5nr
 
 test-scripts:
 	@echo "testing scripts (m5tools) ..."
@@ -66,6 +67,7 @@ deploy-service:
 	$(TPAGE) $(TPAGE_LIB_ARGS) api/M5NR_Conf.pm > $(SERVICE_DIR)/api/M5NR_Conf.pm
 	$(TPAGE) --define perl_path=$(DEPLOY_RUNTIME)/bin/perl api/m5nr.cgi > $(SERVICE_DIR)/api/m5nr.cgi
 	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api conf/apache.conf.tt > /etc/apache2/sites-available/default
+	chmod +x $(SERVICE_DIR)/api/m5nr.cgi
 	echo "restarting apache ..."
 	/etc/init.d/nginx stop
 	/etc/init.d/apache2 restart
