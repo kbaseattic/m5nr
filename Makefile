@@ -69,9 +69,10 @@ deploy-service:
 	echo "restarting apache ..."
 	/etc/init.d/nginx stop
 	/etc/init.d/apache2 restart
-	echo "done executing deploy-service target"
+	@echo "done executing deploy-service target"
 
 deploy-dev: build-solr load-solr build-nr
+	@echo "Done deploying local M5NR data store"
 
 build-nr:
 	-mkdir -p $(SERVICE_STORE)
