@@ -7,8 +7,11 @@ include $(TOOLS_DIR)/Makefile.common
 M5NR_VERSION = 7
 SERVICE_NAME = m5nr
 SERVICE_PORT = 8983
+SERVICE_URL  = localhost:$(SERVICE_PORT)
 SERVICE_DIR  = $(TARGET)/services/$(SERVICE_NAME)
-SERVICE_DATA = /mnt/$(SERVICE_NAME)/data
+SERVICE_STORE = /mnt/$(SERVICE_NAME)
+SERVICE_DATA  = $(SERVICE_STORE)/data
+TPAGE_LIB_ARGS = --define m5nr_collect=$(SERVICE_NAME) --define m5nr_solr=$(SERVICE_URL)/solr --define m5nr_fasta=$(SERVICE_STORE)/md5nr
 TPAGE_DEV_ARGS = --define core_name=$(SERVICE_NAME) --define host_port=$(SERVICE_PORT) --define data_dir=$(SERVICE_DATA)
 
 # Default make target
@@ -16,18 +19,19 @@ default:
 	@echo "Do nothing by default"
 
 # Test Section
-TESTS = $(wildcard test/*.t)
+test: test-service test-client test-scripts
 
-test:
-	# run each test
-	for t in $(TESTS) ; do \
-		if [ -f $$t ] ; then \
-			$(DEPLOY_RUNTIME)/bin/perl $$t ; \
-			if [ $$? -ne 0 ] ; then \
-				exit 1 ; \
-			fi \
-		fi \
-	done
+test-client:
+	@echo "testing client ..."
+	test/test_web.sh localhost/m5nr.cgi client
+
+test-scripts:
+	@echo "testing scripts ..."
+	# do stuff here
+
+test-service:
+	@echo "testing service ..."
+	test/test_web.sh $(SERVICE_URL)/solr/$(SERVICE_NAME)/select service
 
 # Deployment
 all: deploy
@@ -59,6 +63,7 @@ deploy-service:
 	-mkdir -p $(SERVICE_DIR)
 	-mkdir -p $(SERVICE_DIR)/api
 	cp api/m5nr.pm $(SERVICE_DIR)/api/m5nr.pm
+	$(TPAGE) $(TPAGE_LIB_ARGS) api/M5NR_Conf.pm > $(SERVICE_DIR)/api/M5NR_Conf.pm
 	$(TPAGE) --define perl_path=$(DEPLOY_RUNTIME)/bin/perl api/m5nr.cgi > $(SERVICE_DIR)/api/m5nr.cgi
 	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api conf/apache.conf.tt > /etc/apache2/sites-available/default
 	echo "restarting apache ..."
@@ -66,9 +71,13 @@ deploy-service:
 	/etc/init.d/apache2 restart
 	echo "done executing deploy-service target"
 
-deploy-dev: install-solr load-m5nr
+deploy-dev: build-solr load-solr build-nr
 
-install-solr:
+build-nr:
+	-mkdir -p $(SERVICE_STORE)
+	cd dev; ./install-nr.sh $(SERVICE_STORE)
+
+build-solr:
 	-mkdir -p $(SERVICE_DATA)
 	cd dev; ./install-solr.sh $(DEPLOY_RUNTIME)
 	mv $(DEPLOY_RUNTIME)/solr/example/solr/collection1 $(DEPLOY_RUNTIME)/solr/example/solr/$(SERVICE_NAME)
@@ -76,7 +85,7 @@ install-solr:
 	$(TPAGE) $(TPAGE_DEV_ARGS) conf/solrconfig.xml.tt > $(DEPLOY_RUNTIME)/solr/example/solr/$(SERVICE_NAME)/conf/solrconfig.xml
 	$(TPAGE) $(TPAGE_DEV_ARGS) conf/solr.xml.tt > $(DEPLOY_RUNTIME)/solr/example/solr/solr.xml
 
-load-m5nr:
-	cd dev; ./load-m5nr.sh $(DEPLOY_RUNTIME)/solr $(SERVICE_DATA) $(M5NR_VERSION)
+load-solr:
+	cd dev; ./load-solr.sh $(DEPLOY_RUNTIME)/solr $(M5NR_VERSION)
 
 include $(TOOLS_DIR)/Makefile.common.rules

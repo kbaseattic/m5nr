@@ -178,14 +178,14 @@ sub info {
    					     'attributes'  => $self->{attributes}{annotation},
    					     'parameters'  => { 'options'  => { 'limit'  => ['integer','maximum number of items requested'],
                                                             'offset' => ['integer','zero based index of the first data object to be returned'],
-                                                            "order"  => ["string","name of the attribute the returned data is ordered by"],
+                                                            "order"  => ["string","name of the attribute the returned data is ordered by"]
     					                                  },
    							                'required' => { "id" => ["string", "unique identifier from source DB"] },
    							                'body'     => {} }
    				       },
 				       { 'name'        => "md5",
    					     'request'     => $self->cgi->url."/".$self->name."/md5/{id}",
-   					     'description' => "Return annotation(s) of given md5sum (M5NR ID)",
+   					     'description' => "Return annotation(s) or sequence of given md5sum (M5NR ID)",
    					     'example'     => [ $self->cgi->url."/".$self->name."/md5/000821a2e2f63df1a3873e4b280002a8?source=InterPro",
            				                    "retrieve InterPro M5NR data for md5sum '000821a2e2f63df1a3873e4b280002a8'" ],
    					     'method'      => "GET",
@@ -195,6 +195,7 @@ sub info {
    					                                        'limit'  => ['integer','maximum number of items requested'],
                                                             'offset' => ['integer','zero based index of the first data object to be returned'],
                                                             "order"  => ["string","name of the attribute the returned data is ordered by"],
+                                                            'sequence' => ['boolean', "if true return sequence output, else return annotation output, default is false"]
    					                                      },
    							                'required' => { "id" => ["string", "unique identifier in form of md5 checksum"] },
    							                'body'     => {} }
@@ -340,11 +341,15 @@ sub info {
 sub request {
     my ($self) = @_;
 
+    my $seq = $self->cgi->param('sequence') ? 1 : 0;
+
     # determine sub-module to use
     if (scalar(@{$self->rest}) == 0) {
         $self->info();
     } elsif ($self->rest->[0] eq 'sources') {
         $self->sources();
+    } elsif ($self->rest->[0] eq 'md5') && $self->rest->[1] && $seq && ($self->method eq 'GET')) {
+        $self->instance($self->rest->[1]);
     } elsif ((scalar(@{$self->rest}) > 1) && $self->rest->[1] && ($self->method eq 'GET')) {
         $self->query($self->rest->[0], $self->rest->[1]);
     } elsif ((scalar(@{$self->rest}) == 1) && ($self->method eq 'POST')) {
@@ -370,6 +375,17 @@ sub sources {
     }
     
     my $obj = { data => $data, version => 1, url => $self->cgi->url };
+    $self->return_data($obj);
+}
+
+# return data: sequence object for accession or md5
+sub instance {
+    my ($self, $item) = @_;
+    
+    my $clean = $self->clean_md5($item);
+    my $data = { md5 => $clean, sequence => $self->md52sequence($item) };
+    my $url = $self->cgi->url.'/m5nr/md5/'.$item.'?sequence=1';
+    my $obj = { data => $data, version => 1, url => $url };
     $self->return_data($obj);
 }
 
@@ -462,6 +478,26 @@ sub clean_md5 {
         push @$clean, $c;
     }
     return $clean;
+}
+
+sub md52sequence {
+  my ($self, $md5) = @_;
+
+  my $seq;
+  eval {
+      my @recs = `fastacmd -d $M5NR_Conf::m5nr_fasta -s \"lcl|$md5\" -l 0 2>&1`;
+      if ((@recs < 2) || (! $recs[0]) || ($recs[0] =~ /^\s+$/) || ($recs[0] =~ /^\[fastacmd\]/)) {
+          $seq = "";
+      } else {
+          $seq = $recs[1];
+          $seq =~ s/\s+//;
+      }
+  }
+  if ($@) {
+       $self->return_data({"ERROR" => "Unable to access M5NR sequence data"}, 500);
+  }
+  
+  return $seq;
 }
 
 sub solr_data {

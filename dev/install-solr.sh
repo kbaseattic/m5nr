@@ -14,4 +14,4 @@ ln -s $target/solr-4.4.0 $target/solr
 rm solr-4.4.0.tgz
 
 # init.d file
-cp solr /etc/init.d/solr
+tpage --define target=$target solr.tt > /etc/init.d/solr
