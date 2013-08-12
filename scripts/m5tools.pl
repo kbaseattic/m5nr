@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use List::MoreUtils qw(natatime);
+use List::MoreUtils qw(natatime uniq);
 use Getopt::Long;
 use Digest::MD5;
 use LWP::UserAgent;
