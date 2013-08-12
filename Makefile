@@ -7,7 +7,7 @@ include $(TOOLS_DIR)/Makefile.common
 M5NR_VERSION = 7
 SERVICE_NAME = m5nr
 SERVICE_PORT = 8983
-SERVICE_URL  = localhost:$(SERVICE_PORT)
+SERVICE_URL  = http://localhost:$(SERVICE_PORT)
 SERVICE_DIR  = $(TARGET)/services/$(SERVICE_NAME)
 SERVICE_STORE = /mnt/$(SERVICE_NAME)
 SERVICE_DATA  = $(SERVICE_STORE)/data
@@ -24,8 +24,8 @@ test: test-service test-client test-scripts
 
 test-client:
 	@echo "testing client (m5nr API) ..."
-	test/test_web.sh localhost/m5nr.cgi client
-	test/test_web.sh localhost/m5nr.cgi/m5nr m5nr
+	test/test_web.sh http://localhost/m5nr.cgi client
+	test/test_web.sh http://localhost/m5nr.cgi/m5nr m5nr
 
 test-scripts:
 	@echo "testing scripts (m5tools) ..."
@@ -42,26 +42,6 @@ deploy: deploy-client deploy-service
 
 deploy-client: deploy-scripts
 	@echo "Client tools deployed"
-
-# to wrap scripts and deploy them to $(TARGET)/bin using tools in
-# the dev_container. right now, these vars are defined in
-# Makefile.common, so it's redundant here.
-WRAP_PERL_SCRIPT = bash $(TOOLS_DIR)/$(WRAP_PERL_TOOL).sh
-SRC_PERL = $(wildcard scripts/*.pl)
-
-deploy-scripts:
-	-mkdir -p $(TARGET)/bin
-	-mkdir -p $(TARGET)/plbin
-	export KB_TOP=$(TARGET); \
-	export KB_RUNTIME=$(DEPLOY_RUNTIME); \
-	export KB_PERL_PATH=$(TARGET)/lib bash ; \
-	for src in $(SRC_PERL) ; do \
-		basefile=`basename $$src`; \
-		base=`basename $$src .pl`; \
-		echo install $$src $$base ; \
-		cp $$src $(TARGET)/plbin/. ; \
-		$(WRAP_PERL_SCRIPT) "$(TARGET)/plbin/$$basefile" $(TARGET)/bin/$$base ; \
-	done
 
 deploy-service:
 	-mkdir -p $(SERVICE_DIR)
