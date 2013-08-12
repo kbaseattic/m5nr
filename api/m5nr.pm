@@ -348,7 +348,7 @@ sub request {
         $self->info();
     } elsif ($self->rest->[0] eq 'sources') {
         $self->sources();
-    } elsif ($self->rest->[0] eq 'md5') && $self->rest->[1] && $seq && ($self->method eq 'GET')) {
+    } elsif (($self->rest->[0] eq 'md5') && $self->rest->[1] && $seq && ($self->method eq 'GET')) {
         $self->instance($self->rest->[1]);
     } elsif ((scalar(@{$self->rest}) > 1) && $self->rest->[1] && ($self->method eq 'GET')) {
         $self->query($self->rest->[0], $self->rest->[1]);

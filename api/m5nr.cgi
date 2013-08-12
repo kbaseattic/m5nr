@@ -1,9 +1,14 @@
 #![% perl_path %]
 
+# add to @INC
+push @INC, "[% perl_lib %]";
+
 use CGI;
 use JSON;
 use Data::Dumper;
 use URI::Escape;
+use m5nr;
+use M5NR_Conf;
 
 # create cgi and json objects
 my $cgi  = new CGI;
@@ -96,46 +101,31 @@ else {
 
 # if a resource is passed, call the resources module
 if ($resource) {
-    my $error   = '';
-    my $package = $resource;
-    {
-        no strict;
-        eval "require $package;";
-        $error = $@;
+    # check for kbase ids
+    if (scalar(@rest_parameters)) {
+        $rest_parameters[0] = uri_unescape($rest_parameters[0]);
+        $rest_parameters[0] =~ s/^kb\|(.+)$/$1/;
     }
-    if ($error) {
-        print $cgi->header( -type => 'application/json',
-    		                -status => 500,
-    		                -Access_Control_Allow_Origin => '*' );
-    	print $json->encode( {"ERROR"=> "resource '$resource' does not exist"} );
-        exit 0;
-    } else {
-      # check for kbase ids
-      if (scalar(@rest_parameters)) {
-	      $rest_parameters[0] = uri_unescape($rest_parameters[0]);
-	      $rest_parameters[0] =~ s/^kb\|(.+)$/$1/;
-      }
 
-      # create params hash
-      my $params= { 'rest_parameters' => \@rest_parameters,
-		    'method'          => $request_method,
-		    'json_rpc'        => $json_rpc,
-		    'json_rpc_id'     => $json_rpc_id,
-		    'submethod'       => $submethod,
-		    'cgi'             => $cgi,
-		    'resource'        => $resource
-		  };
-        eval {
-            my $resource_obj = $package->new($params);
-            $resource_obj->request();
-        };
-        if ($@) {
-            print $cgi->header( -type => 'application/json',
-			                    -status => 500,
-			                    -Access_Control_Allow_Origin => '*' );
-			print $json->encode( {"ERROR"=> "resource '$resource' request failed\n$@\n"} );
-            exit 0;
-        }
+    # create params hash
+    my $params= { 'rest_parameters' => \@rest_parameters,
+		          'method'          => $request_method,
+		          'json_rpc'        => $json_rpc,
+		          'json_rpc_id'     => $json_rpc_id,
+		          'submethod'       => $submethod,
+		          'cgi'             => $cgi,
+		          'resource'        => $resource
+    };
+    eval {
+        my $resource_obj = $resource->new($params);
+        $resource_obj->request();
+    };
+    if ($@) {
+        print $cgi->header( -type => 'application/json',
+		                    -status => 500,
+		                    -Access_Control_Allow_Origin => '*' );
+		print $json->encode( {"ERROR"=> "resource '$resource' request failed\n$@\n"} );
+        exit 0;
     }
 }
 # we are called without a resource, return API information

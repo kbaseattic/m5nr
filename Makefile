@@ -11,6 +11,7 @@ SERVICE_URL  = localhost:$(SERVICE_PORT)
 SERVICE_DIR  = $(TARGET)/services/$(SERVICE_NAME)
 SERVICE_STORE = /mnt/$(SERVICE_NAME)
 SERVICE_DATA  = $(SERVICE_STORE)/data
+TPAGE_CGI_ARGS = --define perl_path=$(DEPLOY_RUNTIME)/bin/perl --define perl_lib=$(SERVICE_DIR)/api
 TPAGE_LIB_ARGS = --define m5nr_collect=$(SERVICE_NAME) --define m5nr_solr=$(SERVICE_URL)/solr --define m5nr_fasta=$(SERVICE_STORE)/md5nr
 TPAGE_DEV_ARGS = --define core_name=$(SERVICE_NAME) --define host_port=$(SERVICE_PORT) --define data_dir=$(SERVICE_DATA)
 
@@ -65,7 +66,7 @@ deploy-service:
 	-mkdir -p $(SERVICE_DIR)/api
 	cp api/m5nr.pm $(SERVICE_DIR)/api/m5nr.pm
 	$(TPAGE) $(TPAGE_LIB_ARGS) api/M5NR_Conf.pm > $(SERVICE_DIR)/api/M5NR_Conf.pm
-	$(TPAGE) --define perl_path=$(DEPLOY_RUNTIME)/bin/perl api/m5nr.cgi > $(SERVICE_DIR)/api/m5nr.cgi
+	$(TPAGE) $(TPAGE_CGI_ARGS) api/m5nr.cgi > $(SERVICE_DIR)/api/m5nr.cgi
 	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api conf/apache.conf.tt > /etc/apache2/sites-available/default
 	chmod +x $(SERVICE_DIR)/api/m5nr.cgi
 	echo "restarting apache ..."
