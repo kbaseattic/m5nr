@@ -22,15 +22,15 @@ default:
 test: test-service test-client test-scripts
 
 test-client:
-	@echo "testing client ..."
+	@echo "testing client (m5nr API) ..."
 	test/test_web.sh localhost/m5nr.cgi client
 
 test-scripts:
-	@echo "testing scripts ..."
+	@echo "testing scripts (m5tools) ..."
 	# do stuff here
 
 test-service:
-	@echo "testing service ..."
+	@echo "testing service (solr API) ..."
 	test/test_web.sh $(SERVICE_URL)/solr/$(SERVICE_NAME)/select service
 
 # Deployment
