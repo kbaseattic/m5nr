@@ -492,7 +492,7 @@ sub md52sequence {
           $seq = $recs[1];
           $seq =~ s/\s+//;
       }
-  }
+  };
   if ($@) {
        $self->return_data({"ERROR" => "Unable to access M5NR sequence data"}, 500);
   }
