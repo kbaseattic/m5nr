@@ -40,8 +40,15 @@ all: deploy
 
 deploy: deploy-client deploy-service
 
-deploy-client: deploy-scripts
+deploy-client: build-libs deploy-libs deploy-scripts
 	@echo "Client tools deployed"
+
+build-libs:
+	-mkdir lib
+	perl support/api2js.pl -url http://localhost/m5nr.cgi -outfile temp/m5nr.json
+	perl support/definition2typedef.pl -json temp/m5nr.json -typedef temp/m5nr.typedef
+	compile_typespec --impl M5NR --js M5NR --py M5NR temp/m5nr.typedef lib
+	@echo "Done building typespec libs"
 
 deploy-service:
 	-mkdir -p $(SERVICE_DIR)
