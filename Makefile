@@ -38,7 +38,7 @@ test-service:
 # Deployment
 all: deploy
 
-deploy: deploy-client deploy-service
+deploy: deploy-service deploy-client
 
 deploy-client: build-libs deploy-libs deploy-scripts
 	@echo "Client tools deployed"
