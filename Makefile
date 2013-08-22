@@ -64,7 +64,7 @@ deploy-service:
 	@echo "done executing deploy-service target"
 
 deploy-docs:
-	perl support/api2html.pl -url http://localhost/m5nr.cgi -outfile temp/m5nr.html
+	perl support/api2html.pl -url http://localhost/m5nr.cgi -site_name M5NR -outfile temp/m5nr.html
 	cp temp/m5nr.html $(SERVICE_DIR)/api/m5nr.html
 
 deploy-dev: build-solr load-solr build-nr
