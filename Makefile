@@ -38,18 +38,15 @@ test-service:
 # Deployment
 all: deploy
 
-deploy: deploy-service deploy-client
+deploy: deploy-service deploy-client deploy-docs
 
 deploy-client: build-libs deploy-libs deploy-scripts
 	@echo "Client tools deployed"
 
 build-libs:
 	-mkdir lib
-	git submodule init
-	git submodule update
-	cd support; git pull origin develop
-	perl support/bin/api2js.pl -url http://localhost/m5nr.cgi -outfile temp/m5nr.json
-	perl support/bin/definition2typedef.pl -json temp/m5nr.json -typedef temp/m5nr.typedef
+	perl support/api2js.pl -url http://localhost/m5nr.cgi -outfile temp/m5nr.json
+	perl support/definition2typedef.pl -json temp/m5nr.json -typedef temp/m5nr.typedef
 	compile_typespec --impl M5NR --js M5NR --py M5NR temp/m5nr.typedef lib
 	@echo "Done building typespec libs"
 
@@ -65,6 +62,10 @@ deploy-service:
 	/etc/init.d/nginx stop
 	/etc/init.d/apache2 restart
 	@echo "done executing deploy-service target"
+
+deploy-docs:
+	perl support/api2html.pl -url http://localhost/m5nr.cgi -outfile temp/m5nr.html
+	cp temp/m5nr.html $(SERVICE_DIR)/api/m5nr.html
 
 deploy-dev: build-solr load-solr build-nr
 	@echo "Done deploying local M5NR data store"
