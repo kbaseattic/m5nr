@@ -4,6 +4,7 @@ DEPLOY_RUNTIME ?= /kb/runtime
 TARGET ?= /kb/deployment
 -include $(TOOLS_DIR)/Makefile.common
 
+PERL_PATH = $(DEPLOY_RUNTIME)/bin/perl
 M5NR_VERSION = 7
 SERVICE_NAME = m5nr
 SERVICE_PORT = 8983
@@ -11,7 +12,7 @@ SERVICE_URL  = http://localhost:$(SERVICE_PORT)
 SERVICE_DIR  = $(TARGET)/services/$(SERVICE_NAME)
 SERVICE_STORE = /mnt/$(SERVICE_NAME)
 SERVICE_DATA  = $(SERVICE_STORE)/data
-TPAGE_CGI_ARGS = --define perl_path=$(DEPLOY_RUNTIME)/bin/perl --define perl_lib=$(SERVICE_DIR)/api
+TPAGE_CGI_ARGS = --define perl_path=$(PERL_PATH) --define perl_lib=$(SERVICE_DIR)/api
 TPAGE_LIB_ARGS = --define m5nr_collect=$(SERVICE_NAME) --define m5nr_solr=$(SERVICE_URL)/solr --define m5nr_fasta=$(SERVICE_STORE)/md5nr
 TPAGE_DEV_ARGS = --define core_name=$(SERVICE_NAME) --define host_port=$(SERVICE_PORT) --define data_dir=$(SERVICE_DATA)
 
