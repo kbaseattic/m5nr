@@ -2,7 +2,7 @@ TOP_DIR = ../..
 TOOLS_DIR = $(TOP_DIR)/tools
 DEPLOY_RUNTIME ?= /kb/runtime
 TARGET ?= /kb/deployment
-include $(TOOLS_DIR)/Makefile.common
+-include $(TOOLS_DIR)/Makefile.common
 
 M5NR_VERSION = 7
 SERVICE_NAME = m5nr
@@ -85,4 +85,15 @@ build-solr:
 load-solr:
 	cd dev; ./load-solr.sh $(DEPLOY_RUNTIME)/solr $(M5NR_VERSION)
 
-include $(TOOLS_DIR)/Makefile.common.rules
+dependencies:
+	sudo apt-get update
+	sudo apt-get -y upgrade
+	sudo apt-get -y install build-essential git curl emacs bc apache2
+
+standalone: dependencies deploy-dev deploy-service
+	-mkdir -p $(SERVICE_DIR)/bin
+	cp scripts/* $(SERVICE_DIR)/bin/.
+	chmod +x $(SERVICE_DIR)/bin/*
+	@echo "done installing stand alone version"
+
+-include $(TOOLS_DIR)/Makefile.common.rules
