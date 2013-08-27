@@ -39,6 +39,11 @@ test-service:
 # Deployment
 all: deploy
 
+clean:
+	rm -rf support
+	rm -rf temp
+	rm -rf lib
+
 deploy: deploy-service deploy-client deploy-docs
 
 deploy-client: build-libs deploy-libs deploy-scripts
@@ -51,8 +56,6 @@ build-libs:
 	perl support/bin/api2js.pl -url http://localhost/m5nr.cgi -outfile temp/m5nr.json
 	perl support/bin/definition2typedef.pl -json temp/m5nr.json -typedef temp/m5nr.typedef
 	compile_typespec --impl M5NR --js M5NR --py M5NR temp/m5nr.typedef lib
-	rm -rf support
-	rm -rf temp
 	@echo "Done building typespec libs"
 
 deploy-service:
@@ -69,7 +72,7 @@ deploy-service:
 	@echo "done executing deploy-service target"
 
 deploy-docs:
-	perl support/api2html.pl -url http://localhost/m5nr.cgi -site_name M5NR -outfile temp/m5nr.html
+	perl support/bin/api2html.pl -url http://localhost/m5nr.cgi -site_name M5NR -outfile temp/m5nr.html
 	cp temp/m5nr.html $(SERVICE_DIR)/api/m5nr.html
 
 deploy-dev: build-solr load-solr build-nr
