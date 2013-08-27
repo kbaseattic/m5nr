@@ -46,9 +46,13 @@ deploy-client: build-libs deploy-libs deploy-scripts
 
 build-libs:
 	-mkdir lib
-	perl support/api2js.pl -url http://localhost/m5nr.cgi -outfile temp/m5nr.json
-	perl support/definition2typedef.pl -json temp/m5nr.json -typedef temp/m5nr.typedef
+	-mkdir temp
+	git clone https://github.com/MG-RAST/MG-RAST.git support
+	perl support/bin/api2js.pl -url http://localhost/m5nr.cgi -outfile temp/m5nr.json
+	perl support/bin/definition2typedef.pl -json temp/m5nr.json -typedef temp/m5nr.typedef
 	compile_typespec --impl M5NR --js M5NR --py M5NR temp/m5nr.typedef lib
+	rm -rf support
+	rm -rf temp
 	@echo "Done building typespec libs"
 
 deploy-service:
