@@ -91,6 +91,7 @@ build-solr:
 	$(TPAGE) $(TPAGE_DEV_ARGS) conf/solr.xml.tt > $(DEPLOY_RUNTIME)/solr/example/solr/solr.xml
 
 load-solr:
+	/etc/init.d/solr start
 	cd dev; ./load-solr.sh $(DEPLOY_RUNTIME)/solr $(M5NR_VERSION)
 
 dependencies:
