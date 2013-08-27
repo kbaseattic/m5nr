@@ -1,4 +1,0 @@
-[submodule "support"]
-	path = support
-	url = git://github.com/MG-RAST/MG-RAST.git
-	sparsecheckout = true
