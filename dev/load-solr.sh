@@ -10,5 +10,8 @@ DATA_SIZE=500000
 cp chunk_post.pl $SOLR_DIR/example/exampledocs
 cd $SOLR_DIR/example/exampledocs
 for F in ${FILES[@]}; do
-    wget -q -O - ${DATA_FTP}/m5nr_v${M5NR_VER}.${F}.gz | zcat | ./chunk_post.pl $DATA_SIZE
+    FILE=m5nr_v${M5NR_VER}.${F}.gz
+    echo "loading data from $FILE"
+    wget -q -O - $DATA_FTP/$FILE | zcat | ./chunk_post.pl $DATA_SIZE
 done
+echo "done loading data"

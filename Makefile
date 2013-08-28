@@ -99,7 +99,6 @@ build-nr:
 deploy-solr: build-solr load-solr
 
 build-solr:
-	-mkdir -p $(SERVICE_DATA)
 	cd dev; ./install-solr.sh $(DEPLOY_RUNTIME)
 	mv $(DEPLOY_RUNTIME)/solr/example/solr/collection1 $(DEPLOY_RUNTIME)/solr/example/solr/$(SERVICE_NAME)
 	cp conf/schema.xml $(DEPLOY_RUNTIME)/solr/example/solr/$(SERVICE_NAME)/conf/schema.xml
