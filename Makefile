@@ -15,13 +15,15 @@ SERVICE_DATA  = $(SERVICE_STORE)/data
 TPAGE_CGI_ARGS = --define perl_path=$(PERL_PATH) --define perl_lib=$(SERVICE_DIR)/api
 TPAGE_LIB_ARGS = --define m5nr_collect=$(SERVICE_NAME) --define m5nr_solr=$(SERVICE_URL)/solr --define m5nr_fasta=$(SERVICE_STORE)/md5nr
 TPAGE_DEV_ARGS = --define core_name=$(SERVICE_NAME) --define host_port=$(SERVICE_PORT) --define data_dir=$(SERVICE_DATA)
+TPAGE := $(shell which tpage)
 
 # to run local solr in kbase env
 # 	make deploy-dev
 # to run outside of kbase env
 # 	make standalone PERL_PATH=<perl bin> SERVICE_STORE=<dir for large data> DEPLOY_RUNTIME=<dir to place solr>
 # to just install and load solr
-# 	make deploy-solr SERVICE_DATA=<dir to place solr data> DEPLOY_RUNTIME=<dir to place solr> M5NR_VERSION=<m5nr version #>
+# 	make dependencies
+# 	make deploy-solr SERVICE_STORE=<dir to place solr data> DEPLOY_RUNTIME=<dir to place solr> M5NR_VERSION=<m5nr version #>
 
 # Default make target
 default:
@@ -47,14 +49,14 @@ test-service:
 all: deploy
 
 clean:
-	rm -rf support
-	rm -rf temp
-	rm -rf lib
+	-rm -rf support
+	-rm -rf temp
+	-rm -rf lib
 
 uninstall: clean
-	rm -rf $(SERVICE_STORE)
-	rm -rf $(SERVICE_DIR)
-	rm -rf $(DEPLOY_RUNTIME)/solr
+	-rm -rf $(SERVICE_STORE)
+	-rm -rf $(SERVICE_DIR)
+	-rm -rf $(DEPLOY_RUNTIME)/solr*
 
 deploy: deploy-service deploy-client deploy-docs
 
@@ -108,10 +110,11 @@ load-solr:
 	/etc/init.d/solr start
 	cd dev; ./load-solr.sh $(DEPLOY_RUNTIME)/solr $(M5NR_VERSION)
 
+# this is for non-kbase env
 dependencies:
 	sudo apt-get update
 	sudo apt-get -y upgrade
-	sudo apt-get -y install build-essential git curl emacs bc apache2
+	sudo apt-get -y install build-essential git curl emacs bc apache2 libtemplate-perl openjdk-7-jre
 
 standalone: dependencies deploy-dev deploy-service
 	-mkdir -p $(SERVICE_DIR)/bin
