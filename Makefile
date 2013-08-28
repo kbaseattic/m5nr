@@ -52,38 +52,49 @@ clean:
 	-rm -rf support
 	-rm -rf temp
 	-rm -rf lib
+	-rm -rf api
 
 uninstall: clean
+	/etc/init.d/solr stop
 	-rm -rf $(SERVICE_STORE)
 	-rm -rf $(SERVICE_DIR)
 	-rm -rf $(DEPLOY_RUNTIME)/solr*
 
-deploy: deploy-service deploy-client deploy-docs
+deploy: build deploy-service deploy-client deploy-docs
 
-deploy-client: build-libs deploy-libs deploy-scripts
-	@echo "Client tools deployed"
+build: build-service build-libs build-scripts
+
+build-service:
+	git clone https://github.com/MG-RAST/MG-RAST.git support
+	-mkdir -p api/resources
+	cp support/src/MGRAST/lib/resources/resource.pm api/resources/resource.pm
+	cp support/src/MGRAST/lib/resources/m5nr.pm api/resources/m5nr.pm
+	$(TPAGE) $(TPAGE_LIB_ARGS) conf/Conf.pm > api/Conf.pm
+	sed '1d' support/src/MGRAST/cgi/api.cgi | cat conf/header - | $(TPAGE) $(TPAGE_CGI_ARGS) > api/m5nr.cgi
+	chmod +x api/m5nr.cgi
 
 build-libs:
 	-mkdir lib
 	-mkdir temp
-	git clone https://github.com/MG-RAST/MG-RAST.git support
 	perl support/bin/api2js.pl -url http://localhost/m5nr.cgi -outfile temp/m5nr.json
 	perl support/bin/definition2typedef.pl -json temp/m5nr.json -typedef temp/m5nr.typedef
 	compile_typespec --impl M5NR --js M5NR --py M5NR temp/m5nr.typedef lib
 	@echo "Done building typespec libs"
 
+build-scripts:
+	-mkdir scripts
+	cp support/bin/m5tools.pl scripts/m5tools.pl
+
 deploy-service:
-	-mkdir -p $(SERVICE_DIR)
-	-mkdir -p $(SERVICE_DIR)/api
-	cp api/m5nr.pm $(SERVICE_DIR)/api/m5nr.pm
-	$(TPAGE) $(TPAGE_LIB_ARGS) api/M5NR_Conf.pm > $(SERVICE_DIR)/api/M5NR_Conf.pm
-	$(TPAGE) $(TPAGE_CGI_ARGS) api/m5nr.cgi > $(SERVICE_DIR)/api/m5nr.cgi
+	cp -vR api $(SERVICE_DIR)/.
 	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api conf/apache.conf.tt > /etc/apache2/sites-available/default
-	chmod +x $(SERVICE_DIR)/api/m5nr.cgi
 	echo "restarting apache ..."
 	/etc/init.d/nginx stop
 	/etc/init.d/apache2 restart
 	@echo "done executing deploy-service target"
+
+deploy-client: deploy-libs deploy-scripts
+	@echo "Client tools deployed"
 
 deploy-docs:
 	perl support/bin/api2html.pl -url http://localhost/m5nr.cgi -site_name M5NR -outfile temp/m5nr.html
@@ -107,6 +118,7 @@ build-solr:
 
 load-solr:
 	/etc/init.d/solr start
+	sleep 3
 	cd dev; ./load-solr.sh $(DEPLOY_RUNTIME)/solr $(M5NR_VERSION)
 
 # this is for non-kbase env
