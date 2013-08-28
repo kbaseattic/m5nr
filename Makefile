@@ -51,6 +51,11 @@ clean:
 	rm -rf temp
 	rm -rf lib
 
+uninstall: clean
+	rm -rf $(SERVICE_STORE)
+	rm -rf $(SERVICE_DIR)
+	rm -rf $(DEPLOY_RUNTIME)/solr
+
 deploy: deploy-service deploy-client deploy-docs
 
 deploy-client: build-libs deploy-libs deploy-scripts
