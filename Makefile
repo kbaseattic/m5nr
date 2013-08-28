@@ -81,6 +81,7 @@ build-service:
 	-mkdir -p api/resources
 	cp support/src/MGRAST/lib/resources/resource.pm api/resources/resource.pm
 	cp support/src/MGRAST/lib/resources/m5nr.pm api/resources/m5nr.pm
+	cp support/src/MGRAST/lib/GoogleAnalytics.pm api/GoogleAnalytics.pm
 	$(TPAGE) $(TPAGE_LIB_ARGS) conf/Conf.pm > api/Conf.pm
 	sed '1d' support/src/MGRAST/cgi/api.cgi | cat conf/header - | $(TPAGE) $(TPAGE_CGI_ARGS) > api/m5nr.cgi
 	chmod +x api/m5nr.cgi
