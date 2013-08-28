@@ -65,9 +65,16 @@ uninstall: clean
 	-rm -rf $(SERVICE_DIR)
 	-rm -rf $(DEPLOY_RUNTIME)/solr*
 
-deploy: build deploy-service deploy-client deploy-docs
+deploy: deploy-service deploy-client deploy-docs
 
-build: build-service build-libs build-scripts
+deploy-service: build-service
+	-mkdir -p $(SERVICE_DIR)
+	cp -vR api $(SERVICE_DIR)/.
+	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api conf/apache.conf.tt > /etc/apache2/sites-available/default
+	echo "restarting apache ..."
+	/etc/init.d/nginx stop
+	/etc/init.d/apache2 restart
+	@echo "done executing deploy-service target"
 
 build-service:
 	git clone https://github.com/MG-RAST/MG-RAST.git support
@@ -77,6 +84,9 @@ build-service:
 	$(TPAGE) $(TPAGE_LIB_ARGS) conf/Conf.pm > api/Conf.pm
 	sed '1d' support/src/MGRAST/cgi/api.cgi | cat conf/header - | $(TPAGE) $(TPAGE_CGI_ARGS) > api/m5nr.cgi
 	chmod +x api/m5nr.cgi
+
+deploy-client: build-libs deploy-libs build-scripts deploy-scripts
+	@echo "Client tools deployed"
 
 build-libs:
 	-mkdir lib
@@ -89,18 +99,6 @@ build-libs:
 build-scripts:
 	-mkdir scripts
 	cp support/bin/m5tools.pl scripts/m5tools.pl
-
-deploy-service:
-	-mkdir -p $(SERVICE_DIR)
-	cp -vR api $(SERVICE_DIR)/.
-	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api conf/apache.conf.tt > /etc/apache2/sites-available/default
-	echo "restarting apache ..."
-	/etc/init.d/nginx stop
-	/etc/init.d/apache2 restart
-	@echo "done executing deploy-service target"
-
-deploy-client: deploy-libs deploy-scripts
-	@echo "Client tools deployed"
 
 deploy-docs:
 	perl support/bin/api2html.pl -url http://localhost/m5nr.cgi -site_name M5NR -outfile temp/m5nr.html
@@ -133,7 +131,7 @@ dependencies:
 	sudo apt-get -y upgrade
 	sudo apt-get -y install build-essential git curl emacs bc apache2 libtemplate-perl openjdk-7-jre
 
-standalone: dependencies deploy-dev build-service deploy-service deploy-docs
+standalone: dependencies deploy-dev deploy-service deploy-docs
 	-mkdir -p $(SERVICE_DIR)/bin
 	cp scripts/* $(SERVICE_DIR)/bin/.
 	chmod +x $(SERVICE_DIR)/bin/*
