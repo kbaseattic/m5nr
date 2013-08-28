@@ -16,6 +16,13 @@ TPAGE_CGI_ARGS = --define perl_path=$(PERL_PATH) --define perl_lib=$(SERVICE_DIR
 TPAGE_LIB_ARGS = --define m5nr_collect=$(SERVICE_NAME) --define m5nr_solr=$(SERVICE_URL)/solr --define m5nr_fasta=$(SERVICE_STORE)/md5nr
 TPAGE_DEV_ARGS = --define core_name=$(SERVICE_NAME) --define host_port=$(SERVICE_PORT) --define data_dir=$(SERVICE_DATA)
 
+# to run local solr in kbase env
+# 	make deploy-dev
+# to run outside of kbase env
+# 	make standalone PERL_PATH=<perl bin> SERVICE_STORE=<dir for large data> DEPLOY_RUNTIME=<dir to place solr>
+# to just install and load solr
+# 	make deploy-solr SERVICE_DATA=<dir to place solr data> DEPLOY_RUNTIME=<dir to place solr> M5NR_VERSION=<m5nr version #>
+
 # Default make target
 default:
 	@echo "Do nothing by default"
@@ -75,12 +82,14 @@ deploy-docs:
 	perl support/bin/api2html.pl -url http://localhost/m5nr.cgi -site_name M5NR -outfile temp/m5nr.html
 	cp temp/m5nr.html $(SERVICE_DIR)/api/m5nr.html
 
-deploy-dev: build-solr load-solr build-nr
+deploy-dev: deploy-solr build-nr
 	@echo "Done deploying local M5NR data store"
 
 build-nr:
 	-mkdir -p $(SERVICE_STORE)
 	cd dev; ./install-nr.sh $(SERVICE_STORE)
+
+deploy-solr: build-solr load-solr
 
 build-solr:
 	-mkdir -p $(SERVICE_DATA)
