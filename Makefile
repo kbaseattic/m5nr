@@ -91,6 +91,7 @@ build-scripts:
 	cp support/bin/m5tools.pl scripts/m5tools.pl
 
 deploy-service:
+	-mkdir -p $(SERVICE_DIR)
 	cp -vR api $(SERVICE_DIR)/.
 	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api conf/apache.conf.tt > /etc/apache2/sites-available/default
 	echo "restarting apache ..."
