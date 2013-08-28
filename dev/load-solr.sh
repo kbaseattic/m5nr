@@ -11,3 +11,4 @@ cp chunk_post.pl $SOLR_DIR/example/exampledocs
 cd $SOLR_DIR/example/exampledocs
 for F in ${FILES[@]}; do
     wget -q -O - ${DATA_FTP}/m5nr_v${M5NR_VER}.${F}.gz | zcat | ./chunk_post.pl $DATA_SIZE
+done
