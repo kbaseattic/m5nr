@@ -99,7 +99,7 @@ build-libs:
 
 build-scripts:
 	-mkdir scripts
-	cp support/bin/m5tools.pl scripts/m5tools.pl
+	cp support/src/Babel/bin/m5tools.pl scripts/m5tools.pl
 
 deploy-docs:
 	perl support/bin/api2html.pl -url http://localhost/m5nr.cgi -site_name M5NR -outfile temp/m5nr.html
