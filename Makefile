@@ -127,7 +127,7 @@ dependencies:
 	sudo apt-get -y upgrade
 	sudo apt-get -y install build-essential git curl emacs bc apache2 libtemplate-perl openjdk-7-jre
 
-standalone: dependencies deploy-dev deploy-service
+standalone: dependencies deploy-dev build-service deploy-service deploy-docs
 	-mkdir -p $(SERVICE_DIR)/bin
 	cp scripts/* $(SERVICE_DIR)/bin/.
 	chmod +x $(SERVICE_DIR)/bin/*
