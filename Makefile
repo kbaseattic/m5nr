@@ -102,8 +102,8 @@ build-scripts:
 	cp support/src/Babel/bin/m5tools.pl scripts/m5tools.pl
 
 deploy-docs:
-	perl support/bin/api2html.pl -url http://localhost/api.cgi -site_name M5NR -outfile temp/m5nr.html
-	cp temp/m5nr.html $(SERVICE_DIR)/api/m5nr.html
+	perl support/bin/api2html.pl -url http://localhost/api.cgi -site_name M5NR -outfile temp/api.html
+	cp temp/api.html $(SERVICE_DIR)/api/api.html
 
 deploy-dev: deploy-solr build-nr
 	@echo "Done deploying local M5NR data store"
