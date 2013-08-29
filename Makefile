@@ -72,7 +72,7 @@ deploy-service: build-service
 	cp -vR api $(SERVICE_DIR)/.
 	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api conf/apache.conf.tt > /etc/apache2/sites-available/default
 	echo "restarting apache ..."
-	/etc/init.d/nginx stop
+	-/etc/init.d/nginx stop
 	/etc/init.d/apache2 restart
 	@echo "done executing deploy-service target"
 
