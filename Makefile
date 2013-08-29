@@ -39,8 +39,8 @@ test: test-service test-client test-scripts
 
 test-client:
 	@echo "testing client (m5nr API) ..."
-	test/test_web.sh http://localhost/m5nr.cgi client
-	test/test_web.sh http://localhost/m5nr.cgi/m5nr m5nr
+	test/test_web.sh http://localhost/api.cgi client
+	test/test_web.sh http://localhost/api.cgi/m5nr m5nr
 
 test-scripts:
 	@echo "testing scripts (m5tools) ..."
@@ -83,8 +83,8 @@ build-service:
 	cp support/src/MGRAST/lib/resources/m5nr.pm api/resources/m5nr.pm
 	cp support/src/MGRAST/lib/GoogleAnalytics.pm api/GoogleAnalytics.pm
 	$(TPAGE) $(TPAGE_LIB_ARGS) conf/Conf.pm > api/Conf.pm
-	sed '1d' support/src/MGRAST/cgi/api.cgi | cat conf/header - | $(TPAGE) $(TPAGE_CGI_ARGS) > api/m5nr.cgi
-	chmod +x api/m5nr.cgi
+	sed '1d' support/src/MGRAST/cgi/api.cgi | cat conf/header - | $(TPAGE) $(TPAGE_CGI_ARGS) > api/api.cgi
+	chmod +x api/api.cgi
 
 deploy-client: build-libs deploy-libs build-scripts deploy-scripts
 	@echo "Client tools deployed"
@@ -92,7 +92,7 @@ deploy-client: build-libs deploy-libs build-scripts deploy-scripts
 build-libs:
 	-mkdir lib
 	-mkdir temp
-	perl support/bin/api2js.pl -url http://localhost/m5nr.cgi -outfile temp/m5nr.json
+	perl support/bin/api2js.pl -url http://localhost/api.cgi -outfile temp/m5nr.json
 	perl support/bin/definition2typedef.pl -json temp/m5nr.json -typedef temp/m5nr.typedef
 	compile_typespec --impl M5NR --js M5NR --py M5NR temp/m5nr.typedef lib
 	@echo "Done building typespec libs"
@@ -102,7 +102,7 @@ build-scripts:
 	cp support/src/Babel/bin/m5tools.pl scripts/m5tools.pl
 
 deploy-docs:
-	perl support/bin/api2html.pl -url http://localhost/m5nr.cgi -site_name M5NR -outfile temp/m5nr.html
+	perl support/bin/api2html.pl -url http://localhost/api.cgi -site_name M5NR -outfile temp/m5nr.html
 	cp temp/m5nr.html $(SERVICE_DIR)/api/m5nr.html
 
 deploy-dev: deploy-solr build-nr
@@ -130,7 +130,7 @@ load-solr:
 dependencies:
 	sudo apt-get update
 	sudo apt-get -y upgrade
-	sudo apt-get -y install build-essential git curl emacs bc apache2 libtemplate-perl openjdk-7-jre
+	sudo apt-get -y install build-essential git curl emacs bc apache2 libjson-perl libwww-perl libtemplate-perl openjdk-7-jre
 
 standalone: dependencies deploy-dev deploy-service deploy-docs
 	-mkdir -p $(SERVICE_DIR)/bin
