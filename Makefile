@@ -60,7 +60,7 @@ clean:
 	-rm -rf api
 
 uninstall: clean
-	/etc/init.d/solr stop
+	-/etc/init.d/solr stop
 	-rm -rf $(SERVICE_STORE)
 	-rm -rf $(SERVICE_DIR)
 	-rm -rf $(DEPLOY_RUNTIME)/solr*
