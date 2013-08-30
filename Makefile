@@ -55,6 +55,7 @@ all: deploy
 
 clean:
 	-rm -rf support
+	-rm -rf scripts
 	-rm -rf temp
 	-rm -rf lib
 	-rm -rf api
