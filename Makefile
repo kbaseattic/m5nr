@@ -100,6 +100,7 @@ build-libs:
 build-scripts:
 	-mkdir scripts
 	cp support/src/Babel/bin/m5tools.pl scripts/m5tools.pl
+	perl support/bin/generate_commandline.pl -template support/bin/template -config conf/commandline.conf -outdir scripts
 
 deploy-docs:
 	perl support/bin/api2html.pl -url http://localhost/api.cgi -site_name M5NR -outfile temp/api.html
