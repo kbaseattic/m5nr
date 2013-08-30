@@ -5,7 +5,7 @@ TARGET ?= /kb/deployment
 -include $(TOOLS_DIR)/Makefile.common
 
 PERL_PATH = $(DEPLOY_RUNTIME)/bin/perl
-M5NR_VERSION = 7
+M5NR_VERSION = 9
 SERVICE_NAME = m5nr
 SERVICE_PORT = 8983
 SERVICE_URL  = http://localhost:$(SERVICE_PORT)
