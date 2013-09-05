@@ -117,21 +117,30 @@
    <field name="function" type="text_general_rev" indexed="true" stored="true" />
    <field name="organism_id" type="int" indexed="true" stored="false" />
    <field name="organism" type="text_general_rev" indexed="true" stored="true" />
-   <field name="domain" type="text_general_rev" indexed="true" stored="false" />
-   <field name="phylum" type="text_general_rev" indexed="true" stored="false" />
-   <field name="class" type="text_general_rev" indexed="true" stored="false" />
-   <field name="order" type="text_general_rev" indexed="true" stored="false" />
-   <field name="family" type="text_general_rev" indexed="true" stored="false" />
-   <field name="genus" type="text_general_rev" indexed="true" stored="false" />
-   <field name="species" type="text_general_rev" indexed="true" stored="false" />
+   <field name="domain" type="text_general_rev" indexed="true" stored="true" />
+   <field name="phylum" type="text_general_rev" indexed="true" stored="true" />
+   <field name="class" type="text_general_rev" indexed="true" stored="true" />
+   <field name="order" type="text_general_rev" indexed="true" stored="true" />
+   <field name="family" type="text_general_rev" indexed="true" stored="true" />
+   <field name="genus" type="text_general_rev" indexed="true" stored="true" />
+   <field name="species" type="text_general_rev" indexed="true" stored="true" />
    <field name="ncbi_tax_id" type="int" indexed="true" stored="true" />
    <field name="source_id" type="int" indexed="true" stored="false" />
    <field name="source" type="text_full" indexed="true" stored="true" />
    <field name="type" type="text_full" indexed="true" stored="true" />
-   <field name="level1" type="text_general_rev" indexed="true" stored="false" />
-   <field name="level2" type="text_general_rev" indexed="true" stored="false" />
-   <field name="level3" type="text_general_rev" indexed="true" stored="false" />
-   <field name="level4" type="text_general_rev" indexed="true" stored="false" />
+   <field name="organization" type="string" indexed="false" stored="true" />
+   <field name="description" type="string" indexed="false" stored="true" />
+   <field name="url" type="string" indexed="false" stored="true" />
+   <field name="email" type="string" indexed="false" stored="true" />
+   <field name="link" type="string" indexed="false" stored="true" />
+   <field name="title" type="string" indexed="false" stored="true" />
+   <field name="version" type="string" indexed="false" stored="true" />
+   <field name="download_date" type="string" indexed="false" stored="true" />
+   <field name="level1" type="text_general_rev" indexed="true" stored="true" />
+   <field name="level2" type="text_general_rev" indexed="true" stored="true" />
+   <field name="level3" type="text_general_rev" indexed="true" stored="true" />
+   <field name="level4" type="text_general_rev" indexed="true" stored="true" />
+   <field name="object" type="text_full" indexed="true" stored="false" />
 
    <!-- catchall field, containing all other searchable text fields (implemented
         via copyField further on in this schema  -->

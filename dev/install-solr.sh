@@ -15,3 +15,4 @@ rm solr-4.4.0.tgz
 
 # init.d file
 tpage --define target=$target solr.tt > /etc/init.d/solr
+chmod +x /etc/init.d/solr
