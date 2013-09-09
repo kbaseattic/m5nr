@@ -100,7 +100,7 @@ build-libs:
 
 build-scripts:
 	-mkdir scripts
-	cp support/src/Babel/bin/m5tools.pl scripts/m5tools.pl
+	sed '1d' support/src/Babel/bin/m5tools.pl > scripts/nr-m5tools.pl
 	perl support/bin/generate_commandline.pl -template support/bin/template -config conf/commandline.conf -outdir scripts
 
 deploy-docs:
@@ -136,7 +136,7 @@ dependencies:
 
 standalone: dependencies deploy-dev deploy-service deploy-docs
 	-mkdir -p $(SERVICE_DIR)/bin
-	cp scripts/* $(SERVICE_DIR)/bin/.
+	cp support/src/Babel/bin/m5tools.pl $(SERVICE_DIR)/bin/.
 	chmod +x $(SERVICE_DIR)/bin/*
 	@echo "done installing stand alone version"
 
