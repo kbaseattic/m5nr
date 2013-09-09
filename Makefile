@@ -99,7 +99,7 @@ build-libs:
 	-mkdir lib
 	-mkdir docs
 	perl ../communities_api/common/bin/api2js.pl -url http://localhost/api.cgi -outfile docs/m5nr.json
-	perl ../communities_api/common/bin/definition2typedef.pl -json docs/m5nr.json -typedef docs/m5nr.typedef
+	perl ../communities_api/common/bin/definition2typedef.pl -json docs/m5nr.json -typedef docs/m5nr.typedef -service M5NR
 	compile_typespec --impl M5NR --js M5NR --py M5NR docs/m5nr.typedef lib
 	@echo "Done building typespec libs"
 
