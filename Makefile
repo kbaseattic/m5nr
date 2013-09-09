@@ -67,7 +67,7 @@ uninstall: clean
 	-rm -rf $(SERVICE_DIR)
 	-rm -rf $(DEPLOY_RUNTIME)/solr*
 
-deploy: deploy-service deploy-client deploy-docs
+deploy: deploy-service deploy-cfg deploy-client deploy-docs
 
 deploy-service: build-service
 	-mkdir -p $(SERVICE_DIR)
