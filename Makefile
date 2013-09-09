@@ -57,7 +57,7 @@ all: deploy
 clean:
 	-rm -rf support
 	-rm -rf scripts
-	-rm -rf temp
+	-rm -rf docs
 	-rm -rf lib
 	-rm -rf api
 
@@ -97,10 +97,10 @@ deploy-client: build-libs deploy-libs build-scripts deploy-scripts
 
 build-libs:
 	-mkdir lib
-	-mkdir temp
-	perl ../communities_api/common/bin/api2js.pl -url http://localhost/api.cgi -outfile temp/m5nr.json
-	perl ../communities_api/common/bin/definition2typedef.pl -json temp/m5nr.json -typedef temp/m5nr.typedef
-	compile_typespec --impl M5NR --js M5NR --py M5NR temp/m5nr.typedef lib
+	-mkdir docs
+	perl ../communities_api/common/bin/api2js.pl -url http://localhost/api.cgi -outfile docs/m5nr.json
+	perl ../communities_api/common/bin/definition2typedef.pl -json docs/m5nr.json -typedef docs/m5nr.typedef
+	compile_typespec --impl M5NR --js M5NR --py M5NR docs/m5nr.typedef lib
 	@echo "Done building typespec libs"
 
 build-scripts:
@@ -108,9 +108,14 @@ build-scripts:
 	sed '1d' support/src/Babel/bin/m5tools.pl > scripts/nr-m5tools.pl
 	perl ../communities_api/common/bin/generate_commandline.pl -template ../communities_api/common/template -config config/commandline.conf -outdir scripts
 
-deploy-docs:
-	perl ../communities_api/common/bin/api2html.pl -url http://localhost/api.cgi -site_name M5NR -outfile temp/api.html
-	cp temp/api.html $(SERVICE_DIR)/api/api.html
+build-docs:
+	perl ../communities_api/common/bin/api2html.pl -url http://localhost/api.cgi -site_name M5NR -outfile docs/m5nr-api.html
+	pod2html --infile=lib/M5NRClient.pm --outfile=docs/M5NR.html --title="M5NR Client"
+
+deploy-docs: build-docs
+	mkdir -p $(SERVICE_DIR)/webroot
+	cp docs/*.html $(SERVICE_DIR)/webroot/.
+	cp docs/*.html $(SERVICE_DIR)/api/.
 
 deploy-dev: deploy-solr build-nr
 	@echo "Done deploying local M5NR data store"
