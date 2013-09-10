@@ -99,18 +99,18 @@ deploy-client: build-libs deploy-libs build-scripts deploy-scripts
 build-libs:
 	-mkdir lib
 	-mkdir docs
-	perl ../communities_api/common/bin/api2js.pl -url http://localhost/api.cgi -outfile docs/m5nr.json
-	perl ../communities_api/common/bin/definition2typedef.pl -json docs/m5nr.json -typedef docs/m5nr.typedef -service M5NR
+	perl api2js.pl -url http://localhost/api.cgi -outfile docs/m5nr.json
+	perl definition2typedef.pl -json docs/m5nr.json -typedef docs/m5nr.typedef -service M5NR
 	compile_typespec --impl M5NR --js M5NR --py M5NR docs/m5nr.typedef lib
 	@echo "Done building typespec libs"
 
 build-scripts:
 	-mkdir scripts
 	sed '1d' support/src/Babel/bin/m5tools.pl > scripts/nr-m5tools.pl
-	perl ../communities_api/common/bin/generate_commandline.pl -template ../communities_api/common/template -config config/commandline.conf -outdir scripts
+	perl generate_commandline.pl -template $(TOP_DIR)/template/communities.template -config config/commandline.conf -outdir scripts
 
 build-docs:
-	perl ../communities_api/common/bin/api2html.pl -url http://localhost/api.cgi -site_name M5NR -outfile docs/m5nr-api.html
+	perl api2html.pl -url http://localhost/api.cgi -site_name M5NR -outfile docs/m5nr-api.html
 	pod2html --infile=lib/M5NRClient.pm --outfile=docs/M5NR.html --title="M5NR Client"
 
 deploy-docs: build-docs
