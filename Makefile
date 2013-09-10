@@ -83,6 +83,7 @@ deploy-service: build-service
 	@echo "done executing deploy-service target"
 
 build-service:
+	-rm -rf support
 	git clone https://github.com/MG-RAST/MG-RAST.git support
 	-mkdir -p api/resources
 	cp support/src/MGRAST/lib/resources/resource.pm api/resources/resource.pm
