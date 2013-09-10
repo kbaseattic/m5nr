@@ -10,7 +10,7 @@ use LWP::UserAgent;
 use Data::Dumper;
 use JSON;
 
-my $api = 'http://localhost/m5nr.cgi';
+my $api = undef ; #'http://localhost/m5nr.cgi';
 my $sim = '';
 my $acc = '';
 my $md5 = '';
