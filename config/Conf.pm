@@ -20,3 +20,5 @@ if (-s $ENV{"KB_TOP"}.'/deployment.cfg') {
         }
     }
 }
+
+1;
