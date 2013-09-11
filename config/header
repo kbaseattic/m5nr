@@ -1,0 +1,4 @@
+#![% perl_path %]
+
+# add to @INC
+push @INC, "[% perl_lib %]";
