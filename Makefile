@@ -40,8 +40,8 @@ test: test-service test-client test-scripts
 
 test-client:
 	@echo "testing client (m5nr API) ..."
-	test/test_web.sh http://localhost/api.cgi client
-	test/test_web.sh http://localhost/api.cgi/m5nr m5nr
+	test/test_web.sh http://localhost:$(SERVICE_PORT)/api.cgi client
+	test/test_web.sh http://localhost:$(SERVICE_PORT)/api.cgi/m5nr m5nr
 
 test-scripts:
 	@echo "testing scripts (m5tools) ..."
@@ -100,7 +100,7 @@ deploy-client: build-libs deploy-libs build-scripts deploy-scripts
 build-libs:
 	-mkdir lib
 	-mkdir docs
-	api2js -url http://localhost/api.cgi -outfile docs/m5nr.json
+	api2js -url http://localhost:$(SERVICE_PORT)/api.cgi -outfile docs/m5nr.json
 	definition2typedef -json docs/m5nr.json -typedef docs/m5nr.typedef -service M5NR
 	compile_typespec --impl M5NR --js M5NR --py M5NR docs/m5nr.typedef lib
 	@echo "Done building typespec libs"
@@ -111,7 +111,7 @@ build-scripts:
 	generate_commandline -template $(TOP_DIR)/template/communities.template -config config/commandline.conf -outdir scripts
 
 build-docs:
-	api2html -url http://localhost/api.cgi -site_name M5NR -outfile docs/m5nr-api.html
+	api2html -url http://localhost:$(SERVICE_PORT)/api.cgi -site_name M5NR -outfile docs/m5nr-api.html
 	pod2html --infile=lib/M5NRClient.pm --outfile=docs/M5NR.html --title="M5NR Client"
 
 deploy-docs: build-docs
