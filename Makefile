@@ -4,23 +4,22 @@ DEPLOY_RUNTIME ?= /kb/runtime
 TARGET ?= /kb/deployment
 -include $(TOOLS_DIR)/Makefile.common
 
+SOLR_PORT = 8983
+SOLR_URL  = http://localhost:$(SOLR_PORT)
 PERL_PATH = $(DEPLOY_RUNTIME)/bin/perl
 M5NR_VERSION = 9
 SERVICE_NAME = m5nr
 SERVICE_PORT = 7103
-#SERVICE_PORT = 8983  -> SOLR_PORT = 8983
-SERVICE_HOST = http://localhost
-SERVICE_URL  = $(SERVICE_HOST):$(SERVICE_PORT)
 SERVICE_DIR  = $(TARGET)/services/$(SERVICE_NAME)
 SERVICE_STORE = /mnt/$(SERVICE_NAME)
 SERVICE_DATA  = $(SERVICE_STORE)/data
 TPAGE_CGI_ARGS = --define perl_path=$(PERL_PATH) --define perl_lib=$(SERVICE_DIR)/api
 TPAGE_LIB_ARGS = --define m5nr_collect=$(SERVICE_NAME) \
---define m5nr_solr=$(SERVICE_URL)/solr \
+--define m5nr_solr=$(SOLR_URL)/solr \
 --define m5nr_fasta=$(SERVICE_STORE)/md5nr \
 --define api_dir=$(SERVICE_DIR)/api
 TPAGE_DEV_ARGS = --define core_name=$(SERVICE_NAME) \
---define host_port=$(SERVICE_PORT) \
+--define host_port=$(SOLR_PORT) \
 --define data_dir=$(SERVICE_DATA)
 TPAGE := $(shell which tpage)
 
@@ -50,7 +49,7 @@ test-scripts:
 
 test-service:
 	@echo "testing service (solr API) ..."
-	test/test_web.sh $(SERVICE_URL)/solr/$(SERVICE_NAME)/select service
+	test/test_web.sh $(SOLR_URL)/solr/$(SERVICE_NAME)/select service
 
 # Deployment
 all: deploy
@@ -69,6 +68,8 @@ uninstall: clean
 	-rm -rf $(DEPLOY_RUNTIME)/solr*
 
 deploy: deploy-service deploy-cfg deploy-client deploy-docs
+	@echo "stoping apache ..."
+	apachectl stop
 
 deploy-service: build-service
 	-mkdir -p $(SERVICE_DIR)
@@ -78,9 +79,8 @@ deploy-service: build-service
 	chmod +x $(SERVICE_DIR)/start_service
 	chmod +x $(SERVICE_DIR)/stop_service
 	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api --define m5nr_api_port=$(SERVICE_PORT) config/apache.conf.tt > /etc/apache2/sites-available/default
-	echo "restarting apache ..."
-	-/etc/init.d/nginx stop
-	/etc/init.d/apache2 restart
+	@echo "restarting apache ..."
+	apachectl restart
 	@echo "done executing deploy-service target"
 
 build-service:
