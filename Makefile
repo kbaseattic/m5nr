@@ -7,7 +7,8 @@ TARGET ?= /kb/deployment
 PERL_PATH = $(DEPLOY_RUNTIME)/bin/perl
 M5NR_VERSION = 9
 SERVICE_NAME = m5nr
-SERVICE_PORT = 8983
+SERVICE_PORT = 7103
+#SERVICE_PORT = 8983  -> SOLR_PORT = 8983
 SERVICE_HOST = http://localhost
 SERVICE_URL  = $(SERVICE_HOST):$(SERVICE_PORT)
 SERVICE_DIR  = $(TARGET)/services/$(SERVICE_NAME)
@@ -76,7 +77,7 @@ deploy-service: build-service
 	cp service/stop_service $(SERVICE_DIR)/stop_service
 	chmod +x $(SERVICE_DIR)/start_service
 	chmod +x $(SERVICE_DIR)/stop_service
-	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api config/apache.conf.tt > /etc/apache2/sites-available/default
+	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api --define m5nr_api_port=$(SERVICE_PORT) config/apache.conf.tt > /etc/apache2/sites-available/default
 	echo "restarting apache ..."
 	-/etc/init.d/nginx stop
 	/etc/init.d/apache2 restart

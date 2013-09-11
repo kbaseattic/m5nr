@@ -1,4 +1,20 @@
+NameVirtualHost *:[% m5nr_api_port %]
+Listen [% m5nr_api_port %]
+
 <VirtualHost *:80>
+
+    DocumentRoot /usr/share/doc
+    <Directory />
+        Options Indexes MultiViews FollowSymLinks
+        AllowOverride None
+        Order deny,allow
+        Deny from all
+        Allow from 127.0.0.0/255.0.0.0 ::1/128
+    </Directory>
+
+</VirtualHost>
+
+<VirtualHost *:[% m5nr_api_port %]>
 	ServerAdmin webmaster@localhost
 
 	<Files ~ "\.(pl|cgi)$">
