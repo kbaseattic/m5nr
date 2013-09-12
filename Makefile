@@ -90,8 +90,8 @@ build-service:
 	cp support/src/MGRAST/lib/resources/resource.pm api/resources/resource.pm
 	cp support/src/MGRAST/lib/resources/m5nr.pm api/resources/m5nr.pm
 	cp support/src/MGRAST/lib/GoogleAnalytics.pm api/GoogleAnalytics.pm
-	$(TPAGE) $(TPAGE_LIB_ARGS) config/Conf.pm > api/Conf.pm
-	sed '1d' support/src/MGRAST/cgi/api.cgi | cat config/header - | $(TPAGE) $(TPAGE_CGI_ARGS) > api/api.cgi
+	$(TPAGE) $(TPAGE_LIB_ARGS) config/Conf.pm.tt > api/Conf.pm
+	sed '1d' support/src/MGRAST/cgi/api.cgi | cat config/header.tt - | $(TPAGE) $(TPAGE_CGI_ARGS) > api/api.cgi
 	chmod +x api/api.cgi
 
 deploy-client: build-libs deploy-libs build-scripts deploy-scripts
@@ -108,6 +108,7 @@ build-libs:
 build-scripts:
 	-mkdir scripts
 	sed '1d' support/src/Babel/bin/m5tools.pl > scripts/nr-m5tools.pl
+	$(TPAGE) --define m5nr_api_port=$(SERVICE_PORT) config/commandline.conf.tt > config/commandline.conf
 	generate_commandline -template $(TOP_DIR)/template/communities.template -config config/commandline.conf -outdir scripts
 
 build-docs:
