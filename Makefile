@@ -108,7 +108,6 @@ build-libs:
 build-scripts:
 	-mkdir scripts
 	sed '1d' support/src/Babel/bin/m5tools.pl > scripts/nr-m5tools.pl
-	$(TPAGE) --define m5nr_api_port=$(SERVICE_PORT) config/commandline.conf.tt > config/commandline.conf
 	generate_commandline -template $(TOP_DIR)/template/communities.template -config config/commandline.conf -outdir scripts
 
 build-docs:
