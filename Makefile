@@ -18,7 +18,7 @@ TPAGE_LIB_ARGS = --define m5nr_collect=$(SERVICE_NAME) \
 --define m5nr_solr=$(SOLR_URL)/solr \
 --define m5nr_fasta=$(SERVICE_STORE)/md5nr \
 --define api_dir=$(SERVICE_DIR)/api
-TPAGE_DEV_ARGS = --define core_name=$(SERVICE_NAME) \
+TPAGE_SOLR_ARGS = --define core_name=$(SERVICE_NAME) \
 --define host_port=$(SOLR_PORT) \
 --define data_dir=$(SERVICE_DATA)
 TPAGE := $(shell which tpage)
@@ -26,16 +26,15 @@ TPAGE := $(shell which tpage)
 # to run local solr in kbase env
 # 	make deploy-dev
 # to run outside of kbase env
-# 	make standalone PERL_PATH=<perl bin> SERVICE_STORE=<dir for large data> DEPLOY_RUNTIME=<dir to place solr>
+# 	make standalone-m5nr PERL_PATH=<perl bin> SERVICE_STORE=<dir for large data> DEPLOY_RUNTIME=<dir to place solr> M5NR_VERSION=<m5nr version #>
 # to just install and load solr
-# 	make dependencies
-# 	make deploy-solr SERVICE_STORE=<dir to place solr data> DEPLOY_RUNTIME=<dir to place solr> M5NR_VERSION=<m5nr version #>
+# 	make standalone-solr SERVICE_STORE=<dir to place solr data> DEPLOY_RUNTIME=<dir to place solr> M5NR_VERSION=<m5nr version #>
 
-# Default make target
+### Default make target
 default:
 	@echo "Do nothing by default"
 
-# Test Section
+### Test Section
 test: test-service test-client test-scripts
 
 test-client:
@@ -51,7 +50,7 @@ test-service:
 	@echo "testing service (solr API) ..."
 	test/test_web.sh $(SOLR_URL)/solr/$(SERVICE_NAME)/select service
 
-# Deployment
+### Deployment
 all: deploy
 
 clean:
@@ -119,37 +118,44 @@ deploy-docs: build-docs
 	cp docs/*.html $(SERVICE_DIR)/webroot/.
 	cp docs/*.html $(SERVICE_DIR)/api/.
 
-deploy-dev: deploy-solr build-nr
+### all targets below are not part of standard make && make deploy
+
+deploy-dev: config-solr load-solr build-nr
 	@echo "Done deploying local M5NR data store"
+
+clean-solr:
+	-rm -rf $(SERVICE_DATA)
 
 build-nr:
 	-mkdir -p $(SERVICE_STORE)
 	cd dev; ./install-nr.sh $(SERVICE_STORE)
 
-deploy-solr: build-solr load-solr
-
-build-solr:
+install-solr:
 	cd dev; ./install-solr.sh $(DEPLOY_RUNTIME)
+
+config-solr:
 	mv $(DEPLOY_RUNTIME)/solr/example/solr/collection1 $(DEPLOY_RUNTIME)/solr/example/solr/$(SERVICE_NAME)
 	cp config/schema.xml $(DEPLOY_RUNTIME)/solr/example/solr/$(SERVICE_NAME)/conf/schema.xml
-	$(TPAGE) $(TPAGE_DEV_ARGS) config/solrconfig.xml.tt > $(DEPLOY_RUNTIME)/solr/example/solr/$(SERVICE_NAME)/conf/solrconfig.xml
-	$(TPAGE) $(TPAGE_DEV_ARGS) config/solr.xml.tt > $(DEPLOY_RUNTIME)/solr/example/solr/solr.xml
+	$(TPAGE) $(TPAGE_SOLR_ARGS) config/solrconfig.xml.tt > $(DEPLOY_RUNTIME)/solr/example/solr/$(SERVICE_NAME)/conf/solrconfig.xml
+	$(TPAGE) $(TPAGE_SOLR_ARGS) config/solr.xml.tt > $(DEPLOY_RUNTIME)/solr/example/solr/solr.xml
 
 load-solr:
 	/etc/init.d/solr start
 	sleep 3
 	cd dev; ./load-solr.sh $(DEPLOY_RUNTIME)/solr $(M5NR_VERSION)
 
-# this is for non-kbase env
+### below is for non-kbase env
 dependencies:
 	sudo apt-get update
 	sudo apt-get -y upgrade
 	sudo apt-get -y install build-essential git curl emacs bc apache2 libjson-perl libwww-perl libtemplate-perl openjdk-7-jre
 
-standalone: dependencies deploy-dev deploy-service
-	-mkdir -p $(SERVICE_DIR)/bin
-	cp support/src/Babel/bin/m5tools.pl $(SERVICE_DIR)/bin/.
-	chmod +x $(SERVICE_DIR)/bin/*
+standalone-solr: dependencies install-solr config-solr load-solr
+
+standalone-m5nr: standalone-solr build-nr deploy-service
+	-mkdir -p $(HOME)/bin
+	cp support/src/Babel/bin/m5tools.pl $(HOME)/bin/.
+	chmod +x $(HOME)/bin/*
 	@echo "done installing stand alone version"
 
 -include $(TOOLS_DIR)/Makefile.common.rules
