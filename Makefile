@@ -123,9 +123,6 @@ deploy-docs: build-docs
 deploy-dev: config-solr load-solr build-nr
 	@echo "Done deploying local M5NR data store"
 
-clean-solr:
-	-rm -rf $(SERVICE_DATA)
-
 build-nr:
 	-mkdir -p $(SERVICE_STORE)
 	cd dev; ./install-nr.sh $(SERVICE_STORE)
@@ -140,6 +137,8 @@ config-solr:
 	$(TPAGE) $(TPAGE_SOLR_ARGS) config/solr.xml.tt > $(DEPLOY_RUNTIME)/solr/example/solr/solr.xml
 
 load-solr:
+	/etc/init.d/solr stop
+	-rm -rf $(SERVICE_DATA)
 	/etc/init.d/solr start
 	sleep 3
 	cd dev; ./load-solr.sh $(DEPLOY_RUNTIME)/solr $(M5NR_VERSION)
