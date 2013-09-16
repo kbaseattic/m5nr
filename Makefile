@@ -33,7 +33,13 @@ default:
 	@echo "Do nothing by default"
 
 ### Test Section
+TESTS = $(wildcard test/scripts/test_*.t)
+
 test: test-service test-client test-scripts
+
+test-service:
+	@echo "testing service (solr API) ..."
+	test/test_web.sh $(SOLR_URL)/solr/$(SERVICE_NAME)_$(M5NR_VERSION)/select service
 
 test-client:
 	@echo "testing client (m5nr API) ..."
@@ -41,12 +47,14 @@ test-client:
 	test/test_web.sh http://localhost:$(SERVICE_PORT)/api.cgi/m5nr m5nr
 
 test-scripts:
-	@echo "testing scripts (m5tools) ..."
-	# do stuff here
-
-test-service:
-	@echo "testing service (solr API) ..."
-	test/test_web.sh $(SOLR_URL)/solr/$(SERVICE_NAME)_$(M5NR_VERSION)/select service
+	@echo "testing scripts ..."
+	for t in $(TESTS); do \
+		echo $$t; \
+		$(DEPLOY_RUNTIME)/bin/perl $$t; \
+		if [ $$? -ne 0 ]; then \
+			exit 1; \
+		fi \
+	done
 
 ### Deployment
 all: deploy
