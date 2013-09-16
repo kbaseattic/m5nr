@@ -144,6 +144,7 @@ config-solr:
 	$(TPAGE) $(TPAGE_SOLR_ARGS) config/solr.xml.tt > $(DEPLOY_RUNTIME)/solr/example/solr/solr.xml
 
 load-solr:
+	-mkdir -p $(SERVICE_STORE)
 	/etc/init.d/solr stop
 	-rm -rf $(SERVICE_DATA)
 	/etc/init.d/solr start
