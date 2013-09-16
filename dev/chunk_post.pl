@@ -13,7 +13,7 @@ if ((@ARGV > 0) && $ARGV[2]) {
 my $count = 0;
 my @text = ();
 my $tmp = "tmp.json";
-my $cmd = "java -Ddata=stdin -Dtype=application/json -Durl=http://localhost:$solr_port/solr/$collection/update -jar post.jar"
+my $cmd = "java -Ddata=stdin -Dtype=application/json -Durl=http://localhost:$solr_port/solr/$collection/update -jar post.jar";
 
 while (my $line = <STDIN>) {
     chomp $line;
