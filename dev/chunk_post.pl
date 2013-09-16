@@ -25,6 +25,7 @@ while (my $line = <STDIN>) {
 	        print OUT "[".join(",", @text)."]\n";
 	        close OPEN;
 	    }
+	    print "cat $tmp | $cmd\n";
 	    my @out = `cat $tmp | $cmd`;
 	    print "\t".join("\t", @out);
 	    $count = 0;

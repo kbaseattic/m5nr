@@ -139,6 +139,7 @@ install-solr:
 
 config-solr:
 	cp -av $(DEPLOY_RUNTIME)/solr/example/solr/collection1 $(DEPLOY_RUNTIME)/solr/example/solr/$(SERVICE_NAME)_$(M5NR_VERSION)
+	echo "name=$(SERVICE_NAME)_$(M5NR_VERSION)" > $(DEPLOY_RUNTIME)/solr/example/solr/$(SERVICE_NAME)_$(M5NR_VERSION)/core.properties
 	cp config/schema.xml $(DEPLOY_RUNTIME)/solr/example/solr/$(SERVICE_NAME)_$(M5NR_VERSION)/conf/schema.xml
 	$(TPAGE) $(TPAGE_SOLR_ARGS) config/solrconfig.xml.tt > $(DEPLOY_RUNTIME)/solr/example/solr/$(SERVICE_NAME)_$(M5NR_VERSION)/conf/solrconfig.xml
 	$(TPAGE) $(TPAGE_SOLR_ARGS) config/solr.xml.tt > $(DEPLOY_RUNTIME)/solr/example/solr/solr.xml
