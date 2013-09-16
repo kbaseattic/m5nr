@@ -25,7 +25,6 @@ while (my $line = <STDIN>) {
 	        print OUT "[".join(",", @text)."]\n";
 	        close OPEN;
 	    }
-	    print "cat $tmp | $cmd\n";
 	    my @out = `cat $tmp | $cmd`;
 	    print "\t".join("\t", @out);
 	    $count = 0;
@@ -39,7 +38,7 @@ if (@text > 0) {
 	    print OUT "[".join(",", @text)."]\n";
 	    close OPEN;
     }
-    my @out = `cat $tmp | java -Ddata=stdin -Dtype=application/json -jar post.jar`;
+    my @out = `cat $tmp | $cmd`;
     print "\t".join("\t", @out);
     unlink $tmp;
 }
