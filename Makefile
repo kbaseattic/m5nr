@@ -113,7 +113,7 @@ build-libs:
 
 build-scripts:
 	-mkdir scripts
-	sed '1d' support/src/Babel/bin/m5tools.pl > scripts/nr-m5tools.pl
+	sed '1d' support/src/Babel/bin/m5nr-tools.pl > scripts/.
 	generate_commandline -template $(TOP_DIR)/template/communities.template -config config/commandline.conf -outdir scripts
 
 build-docs:
@@ -163,7 +163,7 @@ standalone-solr: | dependencies install-solr config-solr load-solr
 
 standalone-m5nr: standalone-solr build-nr deploy-service
 	-mkdir -p $(HOME)/bin
-	cp support/src/Babel/bin/m5tools.pl $(HOME)/bin/.
+	cp support/src/Babel/bin/m5nr-tools.pl $(HOME)/bin/.
 	chmod +x $(HOME)/bin/*
 	@echo "done installing stand alone version"
 
