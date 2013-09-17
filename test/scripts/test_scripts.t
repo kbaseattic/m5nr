@@ -9,7 +9,8 @@ use JSON;
 
 # assumption scripts are always in path
 my $topDir = $ENV{KB_TOP_DIR} || "/";
-my $service_repo = "communities_api" ;
+my $service_repo = "m5nr" ;
+my $prefix       = "nr" ; # script prefix
 my $script_path = $topDir . "" ;
 my $num_tests   = 0;
 my $json        = new JSON;
@@ -31,7 +32,11 @@ my $scripts = {
 
 # test help options
 foreach my $script (keys %$scripts){
-  my $message = undef ;
+    
+    # ignore scripts with status 0
+    next unless ($scripts->{$script});
+
+    my $message = undef ;
   eval{
     $message = `$script --help` ; 
   };
@@ -56,6 +61,7 @@ foreach my $script (keys %$scripts){
 	  #ok( &check_example($message) , "Example for $script executes without errors" );
       }
   }
+ 
 }
 
 #$num_tests += test_metagenome_query();
@@ -140,10 +146,10 @@ sub check_example{
 
   
   $line        =~s/^\s*//;  
-  my ($script) = $line =~/^(mg-[\w\-]+)/;
-
+  my ($script) = $line =~/^($prefix-[\w\-]+)/;
+  
   if ( ok( $script , "Example exists: $line") ){
-      
+  
       ok( exists $scripts->{$script} , "Script $script is in testing list.") ;
       ok(system("$line 1>output.log 2>error.log") == 0 , "Example exists and executes: $line") if ($line);
       my $return = system("$line 1>output.log 2>error.log") ;
