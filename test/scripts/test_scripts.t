@@ -10,7 +10,7 @@ use JSON;
 # assumption scripts are always in path
 my $topDir = $ENV{KB_TOP_DIR} || "/";
 my $service_repo = "m5nr" ;
-my $prefix       = "nr" ; # script prefix
+my $prefix       = "m5nr" ; # script prefix
 my $script_path = $topDir . "" ;
 my $num_tests   = 0;
 my $json        = new JSON;
@@ -19,14 +19,14 @@ my $success     = 1;
 #my $test_path = "/Users/Andi/Development/kbase/communities_api/scripts" ;
 
 my $scripts = {
-    'nr-get-accession' => 1 ,
-    'nr-get-function'  => 1 ,
-    'nr-get-md5'       => 1 ,
-    'nr-get-ontology'  => 1 ,
-    'nr-get-organism'  => 1 ,
-    'nr-get-sources'   => 1 ,
-    'nr-get-taxonomy'  => 1 , 
-    'nr-m5tools'       => 1 ,
+    'm5nr-get-accession' => 1 ,
+    'm5nr-get-function'  => 1 ,
+    'm5nr-get-md5'       => 1 ,
+    'm5nr-get-ontology'  => 1 ,
+    'm5nr-get-organism'  => 1 ,
+    'm5nr-get-sources'   => 1 ,
+    'm5nr-get-taxonomy'  => 1 , 
+    'm5nr-tools'       => 1 ,
 };
 
 
