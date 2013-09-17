@@ -113,7 +113,7 @@ build-libs:
 
 build-scripts:
 	-mkdir scripts
-	sed '1d' support/src/Babel/bin/m5nr-tools.pl > scripts/.
+	sed '1d' support/src/Babel/bin/m5nr-tools.pl > scripts/m5nr-tools.pl
 	generate_commandline -template $(TOP_DIR)/template/communities.template -config config/commandline.conf -outdir scripts
 
 build-docs:
