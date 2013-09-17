@@ -15,7 +15,6 @@ SERVICE_STORE = /mnt/$(SERVICE_NAME)_$(M5NR_VERSION)
 SERVICE_DATA  = $(SERVICE_STORE)/data
 TPAGE_CGI_ARGS = --define perl_path=$(PERL_PATH) --define perl_lib=$(SERVICE_DIR)/api
 TPAGE_LIB_ARGS = --define m5nr_name=$(SERVICE_NAME) \
---define m5nr_version=$(M5NR_VERSION) \
 --define m5nr_solr=$(SOLR_URL)/solr \
 --define m5nr_fasta=$(SERVICE_STORE)/md5nr \
 --define api_dir=$(SERVICE_DIR)/api

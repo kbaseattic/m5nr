@@ -2,8 +2,7 @@ package Conf;
 
 use Config::Tiny;
 
-$m5nr_name    = "[% m5nr_name %]";
-$m5nr_collect = $m5nr_name."_[% m5nr_version %]";
+$m5nr_collect = "[% m5nr_name %]";
 $m5nr_solr    = "[% m5nr_solr %]";
 $m5nr_fasta   = "[% m5nr_fasta %]";
 $api_resource_dir  = "resources";
@@ -11,11 +10,8 @@ $api_resource_path = "[% api_dir %]/".$api_resource_dir;
 
 if (-s $ENV{"KB_TOP"}.'/deployment.cfg') {
     $kb_cfg = Config::Tiny->read($ENV{"KB_TOP"}.'/deployment.cfg');
-    if ($kb_cfg && exists($kb_cfg->{$m5nr_name})) {
-        $m5nr_cfg = $kb_cfg->{$m5nr_name};
-        if (exists($m5nr_cfg->{'M5NR_VERSION'})) {
-            $m5nr_collect = $m5nr_name."_".$m5nr_cfg->{'M5NR_VERSION'};
-        }
+    if ($kb_cfg && exists($kb_cfg->{$m5nr_collect})) {
+        $m5nr_cfg = $kb_cfg->{$m5nr_collect};
         if (exists($m5nr_cfg->{'SOLR_PORT'}) && exists($m5nr_cfg->{'SOLR_HOST'})) {
             $m5nr_solr = $m5nr_cfg->{'SOLR_PORT'}.':'.$m5nr_cfg->{'SOLR_HOST'}.'/solr';
         }
