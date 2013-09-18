@@ -14,7 +14,8 @@ SERVICE_DIR  = $(TARGET)/services/$(SERVICE_NAME)
 SERVICE_STORE = /mnt/$(SERVICE_NAME)_$(M5NR_VERSION)
 SERVICE_DATA  = $(SERVICE_STORE)/data
 TPAGE_CGI_ARGS = --define perl_path=$(PERL_PATH) --define perl_lib=$(SERVICE_DIR)/api
-TPAGE_LIB_ARGS = --define m5nr_name=$(SERVICE_NAME) \
+TPAGE_LIB_ARGS = --define target=$(TARGET) \
+--define m5nr_name=$(SERVICE_NAME) \
 --define m5nr_solr=$(SOLR_URL)/solr \
 --define m5nr_fasta=$(SERVICE_STORE)/md5nr \
 --define api_dir=$(SERVICE_DIR)/api
@@ -79,7 +80,7 @@ deploy: deploy-cfg | deploy-service deploy-client deploy-docs
 deploy-service: build-service
 	-mkdir -p $(SERVICE_DIR)
 	cp -vR api $(SERVICE_DIR)/.
-	cp service/start_service $(SERVICE_DIR)/start_service
+	$(TPAGE) --define target=$(TARGET) service/start_service.tt > $(SERVICE_DIR)/start_service
 	cp service/stop_service $(SERVICE_DIR)/stop_service
 	chmod +x $(SERVICE_DIR)/start_service
 	chmod +x $(SERVICE_DIR)/stop_service

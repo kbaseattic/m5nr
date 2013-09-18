@@ -1,4 +1,6 @@
 #!/bin/bash
 
+source [% target %]/user-env.sh
+
 /etc/init.d/nginx stop
 /etc/init.d/apache2 start
