@@ -12,8 +12,8 @@ if (-s '[% target %]/deployment.cfg') {
     $kb_cfg = Config::Tiny->read('[% target %]/deployment.cfg');
     if ($kb_cfg && exists($kb_cfg->{$m5nr_collect})) {
         $m5nr_cfg = $kb_cfg->{$m5nr_collect};
-        if (exists($m5nr_cfg->{'SOLR_PORT'}) && exists($m5nr_cfg->{'SOLR_HOST'})) {
-            $m5nr_solr = $m5nr_cfg->{'SOLR_PORT'}.':'.$m5nr_cfg->{'SOLR_HOST'}.'/solr';
+        if (exists($m5nr_cfg->{'SOLR_HOST'}) && exists($m5nr_cfg->{'SOLR_PORT'})) {
+            $m5nr_solr = $m5nr_cfg->{'SOLR_HOST'}.':'.$m5nr_cfg->{'SOLR_PORT'}.'/solr';
         }
         if (exists($m5nr_cfg->{'SOLR_STORE'}) && exists($m5nr_cfg->{'M5NR_VERSION'})) {
             $m5nr_fasta = $m5nr_cfg->{'SOLR_STORE'}."_".$m5nr_cfg->{'M5NR_VERSION'}.'/md5nr';
