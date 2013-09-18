@@ -4,7 +4,7 @@ PASS=0
 URL=$1
 NAME=$2
 
-curl -D test/header.txt "$URL" > /dev/null
+curl -s -D test/header.txt "$URL" > /dev/null
 
 if [ -s test/header.txt ]; then
     PASS=`grep '^HTTP' test/header.txt | grep -c 200`

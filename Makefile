@@ -40,12 +40,11 @@ test: test-service test-client test-scripts
 
 test-service:
 	@echo "testing service (solr API) ..."
-	test/test_web.sh $(SOLR_URL)/solr/$(SERVICE_NAME)_$(M5NR_VERSION)/select service
+	test/test_web.sh http://localhost:$(SERVICE_PORT)/api.cgi service
 
 test-client:
 	@echo "testing client (m5nr API) ..."
-	test/test_web.sh http://localhost:$(SERVICE_PORT)/api.cgi client
-	test/test_web.sh http://localhost:$(SERVICE_PORT)/api.cgi/m5nr m5nr
+	test/test_web.sh http://localhost:$(SERVICE_PORT)/api.cgi/m5nr client
 
 test-scripts:
 	@echo "testing scripts ..."
