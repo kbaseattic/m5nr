@@ -100,7 +100,7 @@ build-service:
 	chmod +x api/api.cgi
 
 deploy-client: | build-libs deploy-libs build-scripts deploy-scripts
-	@echo "Client tools deployed"
+	@echo "client tools deployed"
 
 build-libs:
 	-mkdir lib
@@ -108,12 +108,15 @@ build-libs:
 	api2js -url http://localhost:$(SERVICE_PORT)/api.cgi -outfile docs/m5nr.json
 	definition2typedef -json docs/m5nr.json -typedef docs/m5nr.typedef -service M5NR
 	compile_typespec --impl M5NR --js M5NR --py M5NR docs/m5nr.typedef lib
-	@echo "Done building typespec libs"
+	@echo "done building typespec libs"
 
 build-scripts:
 	-mkdir scripts
 	sed '1d' support/src/Babel/bin/m5nr-tools.pl > scripts/m5nr-tools.pl
 	generate_commandline -template $(TOP_DIR)/template/communities.template -config config/commandline.conf -outdir scripts
+	SRC_PERL = $(wildcard scripts/*.pl)
+	SRC_PYTHON = $(wildcard scripts/*.py)
+	@echo "done building command line scripts"
 
 build-docs:
 	api2html -url http://localhost:$(SERVICE_PORT)/api.cgi -site_name M5NR -outfile docs/m5nr-api.html
