@@ -19,7 +19,7 @@ TPAGE_LIB_ARGS = --define target=$(TARGET) \
 --define m5nr_solr=$(SOLR_URL)/solr \
 --define m5nr_fasta=$(SERVICE_STORE)/md5nr \
 --define api_dir=$(SERVICE_DIR)/api
-TPAGE_SOLR_ARGS = --define host_port=$(SOLR_PORT) --define data_dir=$(SERVICE_DATA)
+TPAGE_SOLR_ARGS = --define host_port=$(SOLR_PORT) --define data_dir=$(SERVICE_DATA) --define max_bool=100000
 TPAGE := $(shell which tpage)
 
 # to run local solr in kbase env
