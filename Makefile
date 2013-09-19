@@ -30,8 +30,7 @@ TPAGE := $(shell which tpage)
 # 	make standalone-solr SERVICE_STORE=<dir to place solr data> DEPLOY_RUNTIME=<dir to place solr> M5NR_VERSION=<m5nr version #>
 
 ### Default make target
-default:
-	@echo "Do nothing by default"
+default: build-scripts
 
 ### Test Section
 TESTS = $(wildcard test/scripts/test_*.t)
@@ -98,8 +97,10 @@ build-service:
 	$(TPAGE) $(TPAGE_LIB_ARGS) config/Conf.pm.tt > api/Conf.pm
 	sed '1d' support/src/MGRAST/cgi/api.cgi | cat config/header.tt - | $(TPAGE) $(TPAGE_CGI_ARGS) > api/api.cgi
 	chmod +x api/api.cgi
+	-mkdir scripts
+	sed '1d' support/src/Babel/bin/m5nr-tools.pl > scripts/m5nr-tools.pl
 
-deploy-client: | build-libs deploy-libs build-scripts deploy-scripts
+deploy-client: deploy-scripts | build-libs deploy-libs
 	@echo "client tools deployed"
 
 build-libs:
@@ -112,10 +113,7 @@ build-libs:
 
 build-scripts:
 	-mkdir scripts
-	sed '1d' support/src/Babel/bin/m5nr-tools.pl > scripts/m5nr-tools.pl
 	generate_commandline -template $(TOP_DIR)/template/communities.template -config config/commandline.conf -outdir scripts
-	$(eval SRC_PERL = $(wildcard scripts/*.pl))
-	$(eval SRC_PYTHON = $(wildcard scripts/*.py))
 	@echo "done building command line scripts"
 
 build-docs:
