@@ -59,6 +59,7 @@ test-scripts:
 all: deploy
 
 clean:
+	-rm -rf tools
 	-rm -rf support
 	-rm -rf scripts
 	-rm -rf docs
@@ -89,7 +90,9 @@ deploy-service: build-service
 
 build-service:
 	-rm -rf support
-	git clone https://github.com/MG-RAST/MG-RAST.git support
+	git submodule init support
+	git submodule update support
+	cd support; git pull origin develop
 	-mkdir -p api/resources
 	cp support/src/MGRAST/lib/resources/resource.pm api/resources/resource.pm
 	cp support/src/MGRAST/lib/resources/m5nr.pm api/resources/m5nr.pm
@@ -97,8 +100,6 @@ build-service:
 	$(TPAGE) $(TPAGE_LIB_ARGS) config/Conf.pm.tt > api/Conf.pm
 	sed '1d' support/src/MGRAST/cgi/api.cgi | cat config/header.tt - | $(TPAGE) $(TPAGE_CGI_ARGS) > api/api.cgi
 	chmod +x api/api.cgi
-	-mkdir scripts
-	sed '1d' support/src/Babel/bin/m5nr-tools.pl > scripts/m5nr-tools.pl
 
 deploy-client: deploy-scripts | build-libs deploy-libs
 	@echo "client tools deployed"
@@ -113,6 +114,13 @@ build-libs:
 
 build-scripts:
 	-mkdir scripts
+	@echo "retrieving M5NR tools"
+	-rm -rf tools
+	git submodule init tools
+	git submodule update tools
+	cd tools; git pull origin master
+	sed '1d' tools/tools/bin/m5nr-tools.pl > scripts/m5nr-tools.pl
+	@echo "auto-generating M5NR scripts"
 	generate_commandline -template $(TOP_DIR)/template/communities.template -config config/commandline.conf -outdir scripts
 	@echo "done building command line scripts"
 

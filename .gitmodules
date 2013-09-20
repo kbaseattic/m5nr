@@ -1,0 +1,6 @@
+[submodule "support"]
+	path = support
+	url = git://github.com/MG-RAST/MG-RAST.git
+[submodule "tools"]
+	path = tools
+	url = git://github.com/MG-RAST/MG-RAST-Tools.git
