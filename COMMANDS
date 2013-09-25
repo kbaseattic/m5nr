@@ -1,2 +1,2 @@
-#group-name m5nr	M5NR Tools
-command-set	scripts/(.*).pl m5nr
+#group-name	m5nr	M5NR Tools
+#command-set	scripts/(.*).pl	m5nr
