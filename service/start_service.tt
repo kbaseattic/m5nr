@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source [% target %]/user-env.sh
+
+apachectl start
