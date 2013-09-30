@@ -1,0 +1,50 @@
+OVERVIEW
+-----------------------------------------
+M5NR API
+
+The M5NR is an integration of many sequence databases into one single, searchable database. 
+A single similarity search (using BLAST or BLAT) will allow the user to retrieve similarities to several databases (e.g. NCBI’s nr, KEGGs database or the EGGnogs , ...).
+The M5NR API facilitates mappings between M5NR IDs (sequence md5 checksums) and annotations from databases integrated onto the M5NR. 
+
+CHANGES - 9/30/2013
+------------------
+
+
+VERSION: 1.0 (Released 9/15/2013)
+------------------------------------------
+FEATURES:
+
+- REST API with following resources:
+  - ontology
+  - taxonomy
+  - sources
+  - accession
+  - md5
+  - function
+  - organism
+  - sequence
+
+- Scripts
+  - m5nr-get-accession
+  - m5nr-get-md5
+  - m5nr-get-organism
+  - m5nr-get-taxonomy
+  - m5nr-get-function
+  - m5nr-get-ontology
+  - m5nr-get-sources
+  - m5nr-tools
+
+- Databases:
+  - RefSeq
+  - SEED
+  - KBase
+  - Uniprot
+  - KEGG
+  - Patric
+  - IMG
+  - COG
+  - Genbank
+  - Silva
+  - RDP
+
+for a complete list of databases integrated into the M5NR please check the "source" resource of the API.
