@@ -76,7 +76,7 @@ deploy: deploy-cfg | deploy-service deploy-client deploy-docs
 	@echo "stoping apache ..."
 	apachectl stop
 
-deploy-service: build-service
+deploy-service: build-nr build-service
 	-mkdir -p $(SERVICE_DIR)
 	cp -vR api $(SERVICE_DIR)/.
 	$(TPAGE) --define target=$(TARGET) service/start_service.tt > $(SERVICE_DIR)/start_service
