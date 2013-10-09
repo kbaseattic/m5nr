@@ -46,3 +46,5 @@ FEATURES:
   - Genbank
   - Silva
   - RDP
+
+for a complete list of databases integrated into the M5NR please check the "source" resource of the API.
