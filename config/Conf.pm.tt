@@ -2,6 +2,7 @@ package Conf;
 
 use Config::Tiny;
 
+$url_base = "";
 $m5nr_collect = "[% m5nr_name %]";
 $m5nr_solr    = "[% m5nr_solr %]";
 $m5nr_fasta   = "[% m5nr_fasta %]";
@@ -17,6 +18,9 @@ if (-s '[% target %]/deployment.cfg') {
         }
         if (exists($m5nr_cfg->{'SOLR_STORE'}) && exists($m5nr_cfg->{'M5NR_VERSION'})) {
             $m5nr_fasta = $m5nr_cfg->{'SOLR_STORE'}."_".$m5nr_cfg->{'M5NR_VERSION'}.'/md5nr';
+        }
+        if (exists($m5nr_cfg->{'URL_BASE'})) {
+            $url_base = $m5nr_cfg->{'URL_BASE'};
         }
     }
 }
