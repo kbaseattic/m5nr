@@ -26,7 +26,7 @@ TPAGE := $(shell which tpage)
 # to run local solr in kbase env
 # 	make deploy-dev
 # to run outside of kbase env
-# 	make standalone-m5nr PERL_PATH=<perl bin> SERVICE_STORE=<dir for large data> DEPLOY_RUNTIME=<dir to place solr> M5NR_VERSION=<m5nr version #>
+# 	make standalone-m5nr PERL_PATH=<perl bin> SERVICE_STORE=<dir for large data> DEPLOY_RUNTIME=<dir to place solr> M5NR_VERSION=<m5nr version #> SERVICE_DIR=<location of service>
 # to just install and load solr
 # 	make standalone-solr SERVICE_STORE=<dir to place solr data> DEPLOY_RUNTIME=<dir to place solr> M5NR_VERSION=<m5nr version #>
 
@@ -170,10 +170,10 @@ dependencies:
 
 standalone-solr: | dependencies install-solr config-solr load-solr
 
-standalone-m5nr: standalone-solr build-nr deploy-service
-	-mkdir -p $(HOME)/bin
-	cp support/src/Babel/bin/m5nr-tools.pl $(HOME)/bin/.
-	chmod +x $(HOME)/bin/*
+standalone-m5nr: standalone-solr deploy-service
+	-mkdir -p $(SERVICE_DIR)/bin
+	cp support/src/Babel/bin/m5nr-tools.pl $(SERVICE_DIR)/bin/.
+	chmod +x $(SERVICE_DIR)/bin/*
 	@echo "done installing stand alone version"
 
 -include $(TOOLS_DIR)/Makefile.common.rules
