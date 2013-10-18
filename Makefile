@@ -166,7 +166,7 @@ load-solr:
 dependencies:
 	sudo apt-get update
 	sudo apt-get -y upgrade
-	sudo apt-get -y install build-essential git curl emacs bc apache2 libjson-perl libwww-perl libtemplate-perl openjdk-7-jre
+	sudo apt-get -y install build-essential git curl emacs bc apache2 libjson-perl libwww-perl libtemplate-perl libconfig-tiny-perl liblist-moreutils-perl openjdk-7-jre
 
 standalone-solr: | dependencies install-solr config-solr load-solr
 
