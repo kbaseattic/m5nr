@@ -113,6 +113,8 @@
    <field name="md5_id" type="int" indexed="true" stored="false" />
    <field name="md5" type="text_full" indexed="true" stored="true" />
    <field name="accession" type="text_full" indexed="true" stored="true" />
+   <field name="alias" type="text_general_rev" indexed="true" stored="true", multiValued="true" />
+   <field name="ontology_id" type="int" indexed="true" stored="false" />
    <field name="function_id" type="int" indexed="true" stored="false" />
    <field name="function" type="text_general_rev" indexed="true" stored="true" />
    <field name="organism_id" type="int" indexed="true" stored="false" />
