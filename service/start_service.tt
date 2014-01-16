@@ -1,5 +1,11 @@
 #!/bin/bash
 
 source [% target %]/user-env.sh
+DIR=$(dirname $0)
 
-apachectl start
+if  [ $(id -u) -eq 0 ] ; then
+  apachectl start
+else
+  echo "Running as non-root"
+  /usr/sbin/apachectl -d $DIR -k start
+fi

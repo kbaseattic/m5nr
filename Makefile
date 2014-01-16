@@ -12,7 +12,7 @@ SERVICE_NAME = m5nr
 SERVICE_PORT = 7103
 SERVICE_URL = http://localhost
 SERVICE_DIR  = $(TARGET)/services/$(SERVICE_NAME)
-SERVICE_STORE = /mnt/$(SERVICE_NAME)_$(M5NR_VERSION)
+SERVICE_STORE = $(BUILDROOT)/mnt/$(SERVICE_NAME)_$(M5NR_VERSION)
 SERVICE_DATA  = $(SERVICE_STORE)/data
 TPAGE_CGI_ARGS = --define perl_path=$(PERL_PATH) --define perl_lib=$(SERVICE_DIR)/api
 TPAGE_LIB_ARGS = --define target=$(TARGET) \
@@ -75,18 +75,22 @@ uninstall: clean
 
 deploy: deploy-cfg | deploy-service deploy-client deploy-docs
 	@echo "stoping apache ..."
-	apachectl stop
+	$(SERVICE_DIR)/stop_service
 
 deploy-service: build-nr build-service
 	-mkdir -p $(SERVICE_DIR)
+	-mkdir -p $(SERVICE_DIR)/conf
 	cp -vR api $(SERVICE_DIR)/.
 	$(TPAGE) --define target=$(TARGET) service/start_service.tt > $(SERVICE_DIR)/start_service
 	cp service/stop_service $(SERVICE_DIR)/stop_service
 	chmod +x $(SERVICE_DIR)/start_service
 	chmod +x $(SERVICE_DIR)/stop_service
-	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api --define m5nr_api_port=$(SERVICE_PORT) config/apache.conf.tt > /etc/apache2/sites-available/default
+	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api --define m5nr_api_port=$(SERVICE_PORT) config/apache.conf.tt > $(BUILDROOT)/etc/apache2/sites-available/default
+	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api --define m5nr_api_port=$(SERVICE_PORT) config/httpd.conf.tt > $(SERVICE_DIR)/conf/httpd.conf
 	@echo "restarting apache ..."
-	apachectl restart
+	chmod +x $(SERVICE_DIR)/start_service
+	$(SERVICE_DIR)/stop_service || echo "Ignore"
+	$(SERVICE_DIR)/start_service
 	@echo "done executing deploy-service target"
 
 build-service:
@@ -156,9 +160,9 @@ config-solr:
 
 load-solr:
 	-mkdir -p $(SERVICE_STORE)
-	/etc/init.d/solr stop
+	/etc/init.d/solr stop || echo "Ignore"
 	-rm -rf $(SERVICE_DATA)
-	/etc/init.d/solr start
+	/etc/init.d/solr start || echo "Ignore"
 	sleep 5
 	cd dev; ./load-solr.sh $(DEPLOY_RUNTIME)/solr $(SOLR_PORT) $(M5NR_VERSION) $(SERVICE_NAME)
 
