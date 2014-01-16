@@ -1,0 +1,37 @@
+NameVirtualHost *:[% m5nr_api_port %]
+Listen [% m5nr_api_port %]
+LoadModule cgi_module /etc/httpd/modules/mod_cgi.so
+LoadModule alias_module /etc/httpd/modules/mod_alias.so
+LoadModule mime_module /etc/httpd/modules/mod_mime.so
+LoadModule mime_magic_module /etc/httpd/modules/mod_mime_magic.so
+LoadModule authz_host_module /etc/httpd/modules/mod_authz_host.so
+MIMEMagicFile /etc/httpd/conf/magic
+TypesConfig /etc/mime.types
+ServerName localhost
+
+
+<VirtualHost *:[% m5nr_api_port %]>
+	ServerAdmin webmaster@localhost
+
+	<Files ~ "\.(pl|cgi)$">
+        	Options +ExecCGI
+	</Files>
+
+        DocumentRoot [% m5nr_dir %]
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride None
+	</Directory>
+
+        ScriptAlias /cgi-bin/ [% m5nr_dir %]
+        <Directory "[% m5nr_dir %]">
+		AllowOverride None
+		Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+		AddHandler cgi-script .pl .cgi
+		Order allow,deny
+		Allow from all
+	</Directory>
+
+	ErrorLog error.log
+	LogLevel warn
+</VirtualHost>
