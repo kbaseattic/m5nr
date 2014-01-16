@@ -1,13 +1,16 @@
 NameVirtualHost *:[% m5nr_api_port %]
 Listen [% m5nr_api_port %]
-LoadModule cgi_module /etc/httpd/modules/mod_cgi.so
-LoadModule alias_module /etc/httpd/modules/mod_alias.so
-LoadModule mime_module /etc/httpd/modules/mod_mime.so
-LoadModule mime_magic_module /etc/httpd/modules/mod_mime_magic.so
-LoadModule authz_host_module /etc/httpd/modules/mod_authz_host.so
-MIMEMagicFile /etc/httpd/conf/magic
+LoadModule cgi_module modules/mod_cgi.so
+LoadModule alias_module modules/mod_alias.so
+LoadModule mime_module modules/mod_mime.so
+LoadModule mime_magic_module modules/mod_mime_magic.so
+LoadModule authz_host_module modules/mod_authz_host.so
+LoadModule log_config_module modules/mod_log_config.so
+MIMEMagicFile conf/magic
 TypesConfig /etc/mime.types
 ServerName localhost
+CustomLog logs/access.log combined
+PidFile logs/httpd.pid
 
 
 <VirtualHost *:[% m5nr_api_port %]>
@@ -32,6 +35,6 @@ ServerName localhost
 		Allow from all
 	</Directory>
 
-	ErrorLog error.log
+	ErrorLog logs/error.log
 	LogLevel warn
 </VirtualHost>

@@ -10,7 +10,7 @@ PERL_PATH = $(DEPLOY_RUNTIME)/bin/perl
 M5NR_VERSION = 9
 SERVICE_NAME = m5nr
 SERVICE_PORT = 7103
-SERVICE_URL = http://localhost
+SERVICE_URL = http://localhost:${SERVICE_PORT}
 SERVICE_DIR  = $(TARGET)/services/$(SERVICE_NAME)
 SERVICE_STORE = $(BUILDROOT)/mnt/$(SERVICE_NAME)_$(M5NR_VERSION)
 SERVICE_DATA  = $(SERVICE_STORE)/data
@@ -40,11 +40,11 @@ test: test-service test-client test-scripts
 
 test-service:
 	@echo "testing service (solr API) ..."
-	test/test_web.sh $(SERVICE_URL):$(SERVICE_PORT)/api.cgi service
+	test/test_web.sh $(SERVICE_URL)/api.cgi service
 
 test-client:
 	@echo "testing client (m5nr API) ..."
-	test/test_web.sh $(SERVICE_URL):$(SERVICE_PORT)/api.cgi/m5nr client
+	test/test_web.sh $(SERVICE_URL)/api.cgi/m5nr client
 
 test-scripts:
 	@echo "testing scripts ..."
@@ -112,7 +112,7 @@ deploy-client: deploy-scripts | build-libs deploy-libs
 build-libs:
 	-mkdir lib
 	-mkdir docs
-	api2js -url $(SERVICE_URL):$(SERVICE_PORT)/api.cgi -outfile docs/m5nr.json
+	api2js -url $(SERVICE_URL)/api.cgi -outfile docs/m5nr.json
 	definition2typedef -json docs/m5nr.json -typedef docs/m5nr.typedef -service M5NR
 	compile_typespec --impl M5NR --js M5NR --py M5NR docs/m5nr.typedef lib
 	@echo "done building typespec libs"
@@ -130,7 +130,7 @@ build-scripts:
 	@echo "done building command line scripts"
 
 build-docs:
-	api2html -url $(SERVICE_URL):$(SERVICE_PORT)/api.cgi -site_name M5NR -outfile docs/m5nr-api.html
+	api2html -url $(SERVICE_URL)/api.cgi -site_name M5NR -outfile docs/m5nr-api.html
 	pod2html --infile=lib/M5NRClient.pm --outfile=docs/M5NR.html --title="M5NR Client"
 
 deploy-docs: build-docs
