@@ -1,3 +1,10 @@
 #!/bin/bash
 
-apachectl stop
+DIR=$(dirname $0)
+
+if [ $(id -u) -eq 0 ] ; then
+  apachectl stop
+else 
+  echo "Runing as non-root"
+  /usr/sbin/apachectl -d $DIR -k stop
+fi
