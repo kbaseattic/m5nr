@@ -6,9 +6,13 @@ The M5NR is an integration of many sequence databases into one single, searchabl
 A single similarity search (using BLAST or BLAT) will allow the user to retrieve similarities to several databases (e.g. NCBI’s nr, KEGGs database or the EGGnogs , ...).
 The M5NR API facilitates mappings between M5NR IDs (sequence md5 checksums) and annotations from databases integrated onto the M5NR. 
 
+
+CHANGES - 1/1/2014
+
+
 CHANGES - 9/30/2013
 ------------------
-
+Added Alias support.
 
 VERSION: 1.0 (Released 9/15/2013)
 ------------------------------------------
