@@ -4,7 +4,7 @@ DATA_DIR=$1
 DATA_FTP=ftp://ftp.metagenomics.anl.gov/data/MD5nr/current/md5nr_blast.tar.gz
 
 cd $DATA_DIR
-[ -e m5nr.pal ] && exit
+[ -e md5nr.pal ] && exit
 wget $DATA_FTP
 tar -zxvf md5nr_blast.tar.gz
 rm md5nr_blast.tar.gz
