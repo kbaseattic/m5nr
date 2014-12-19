@@ -6,5 +6,6 @@ if [ $(id -u) -eq 0 ] ; then
   apachectl stop
 else 
   echo "Runing as non-root"
+  export APACHE_ULIMIT_MAX_FILES="true"
   /usr/sbin/apachectl -d $DIR -k stop
 fi
