@@ -7,11 +7,16 @@ if [[ $# -gt 0 ]] ; then
 	shift
 fi
 
+set -e
+set -x
+
 # install solr
-wget http://apache.mirrors.hoobly.com/lucene/solr/4.5.0/solr-4.5.0.tgz
-tar -xzf solr-4.5.0.tgz -C $target
-ln -s $target/solr-4.5.0 $target/solr
-rm solr-4.5.0.tgz
+SOLR-VERSION="4.10.3"
+
+wget http://apache.mirrors.hoobly.com/lucene/solr/${SOLR-VERSION}/solr-${SOLR-VERSION}.tgz
+tar -xzf solr-${SOLR-VERSION}.tgz -C $target
+ln -s $target/solr-${SOLR-VERSION} $target/solr
+rm solr-${SOLR-VERSION}.tgz
 
 # init.d file
 tpage --define target=$target solr.tt > /etc/init.d/solr
