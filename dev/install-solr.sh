@@ -11,12 +11,12 @@ set -e
 set -x
 
 # install solr
-export SOLR-VERSION="4.10.3"
+export SOLR_VERSION="4.10.3"
 
-wget http://apache.mirrors.hoobly.com/lucene/solr/${SOLR-VERSION}/solr-${SOLR-VERSION}.tgz
-tar -xzf solr-${SOLR-VERSION}.tgz -C $target
-ln -s $target/solr-${SOLR-VERSION} $target/solr
-rm solr-${SOLR-VERSION}.tgz
+wget http://apache.mirrors.hoobly.com/lucene/solr/${SOLR_VERSION}/solr-${SOLR_VERSION}.tgz
+tar -xzf solr-${SOLR_VERSION}.tgz -C $target
+ln -s $target/solr-${SOLR_VERSION} $target/solr
+rm solr-${SOLR_VERSION}.tgz
 
 # init.d file
 tpage --define target=$target solr.tt > /etc/init.d/solr
