@@ -11,7 +11,7 @@ set -e
 set -x
 
 # install solr
-SOLR-VERSION="4.10.3"
+export SOLR-VERSION="4.10.3"
 
 wget http://apache.mirrors.hoobly.com/lucene/solr/${SOLR-VERSION}/solr-${SOLR-VERSION}.tgz
 tar -xzf solr-${SOLR-VERSION}.tgz -C $target
