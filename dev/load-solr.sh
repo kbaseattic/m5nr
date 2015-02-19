@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -e
+set -x
+
 SOLR_DIR=$1
 SOLR_PORT=$2
 M5NR_VER=$3
