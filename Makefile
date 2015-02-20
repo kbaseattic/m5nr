@@ -161,6 +161,7 @@ config-solr:
 load-solr:
 	-mkdir -p $(SERVICE_STORE)
 	/etc/init.d/solr stop || echo "Ignore"
+	sleep 3
 	-rm -rf $(SERVICE_DATA)
 	/etc/init.d/solr start || echo "Ignore"
 	sleep 5
