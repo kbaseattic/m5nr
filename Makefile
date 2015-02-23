@@ -170,7 +170,7 @@ load-solr:
 load-cached-solr:
 	/etc/init.d/solr stop || echo "Ignore" # just in case
 	sleep 3
-	if [ ! -d $(SERVICE_DATA)/index/ ] ; then 
+	if [ ! -d $(SERVICE_DATA)/index/ ] ; then \
 		mkdir -p $(SERVICE_DATA)/index/ ; \
 		#curl "http://shock.metagenomics.anl.gov/node/ee38de76-5908-41ca-97d0-e3841bf84d90?download" | tar xvz -C $(SERVICE_DATA)/index/ # solr-m5nr_v1_solr_v4.10.3.tgz ; \
 		curl "http://shock.metagenomics.anl.gov/node/1d7fc046-8bab-4b44-a0da-c387ee972521?download" | tar xvz -C $(SERVICE_DATA)/index/ # solr-m5nr_v10_solr_v4.10.3.tgz ; \
