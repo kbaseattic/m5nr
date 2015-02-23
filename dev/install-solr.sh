@@ -15,6 +15,7 @@ export SOLR_VERSION="4.10.3"
 
 wget http://apache.mirrors.hoobly.com/lucene/solr/${SOLR_VERSION}/solr-${SOLR_VERSION}.tgz
 tar -xzf solr-${SOLR_VERSION}.tgz -C $target
+rm -f $target/solr
 ln -s $target/solr-${SOLR_VERSION} $target/solr
 rm solr-${SOLR_VERSION}.tgz
 
