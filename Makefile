@@ -176,7 +176,6 @@ load-cached-solr:
 	#curl "http://shock.metagenomics.anl.gov/node/ee38de76-5908-41ca-97d0-e3841bf84d90?download" | tar xvz -C $(SERVICE_DATA)/index/ # solr-m5nr_v1_solr_v4.10.3.tgz
 	curl "http://shock.metagenomics.anl.gov/node/1d7fc046-8bab-4b44-a0da-c387ee972521?download" | tar xvz -C $(SERVICE_DATA)/index/ # solr-m5nr_v10_solr_v4.10.3.tgz
 	sleep 3
-	cd dev; ./load-solr.sh $(DEPLOY_RUNTIME)/solr $(SOLR_PORT) $(M5NR_VERSION) $(SERVICE_NAME)
 	/etc/init.d/solr start || echo "Ignore"
 
 
