@@ -168,15 +168,14 @@ load-solr:
 	cd dev; ./load-solr.sh $(DEPLOY_RUNTIME)/solr $(SOLR_PORT) $(M5NR_VERSION) $(SERVICE_NAME)
 
 load-cached-solr:
+	/etc/init.d/solr stop || echo "Ignore" # just in case
+	sleep 3
+	if [ ! -d $(SERVICE_DATA)/index/ ] ; then 
+		mkdir -p $(SERVICE_DATA)/index/ ; \
+		#curl "http://shock.metagenomics.anl.gov/node/ee38de76-5908-41ca-97d0-e3841bf84d90?download" | tar xvz -C $(SERVICE_DATA)/index/ # solr-m5nr_v1_solr_v4.10.3.tgz ; \
+		curl "http://shock.metagenomics.anl.gov/node/1d7fc046-8bab-4b44-a0da-c387ee972521?download" | tar xvz -C $(SERVICE_DATA)/index/ # solr-m5nr_v10_solr_v4.10.3.tgz ; \
+	fi
 	
-	/etc/init.d/solr stop || echo "Ignore"
-	sleep 3
-	-rm -rf $(SERVICE_STORE)
-	-mkdir -p $(SERVICE_DATA)/index/
-	#curl "http://shock.metagenomics.anl.gov/node/ee38de76-5908-41ca-97d0-e3841bf84d90?download" | tar xvz -C $(SERVICE_DATA)/index/ # solr-m5nr_v1_solr_v4.10.3.tgz
-	curl "http://shock.metagenomics.anl.gov/node/1d7fc046-8bab-4b44-a0da-c387ee972521?download" | tar xvz -C $(SERVICE_DATA)/index/ # solr-m5nr_v10_solr_v4.10.3.tgz
-	sleep 3
-	/etc/init.d/solr start || echo "Ignore"
 
 
 ### below is for non-kbase env
@@ -187,6 +186,7 @@ dependencies:
 
 standalone-solr: | dependencies install-solr config-solr load-solr
 
+# this will only deploy solr if directory $(SERVICE_DATA)/index/ does not exist
 standalone-cached-solr: | dependencies install-solr config-solr load-cached-solr
 
 standalone-m5nr: standalone-solr deploy-service
