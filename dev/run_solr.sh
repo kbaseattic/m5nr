@@ -7,11 +7,9 @@
 set -e
 set -x
 
-TARGET ?= /kb/deployment
-
 NAME="solr"
 PIDFILE="/var/run/${NAME}.pid"
-SOLR_DIR="${TARGET}/solr/example"
+SOLR_DIR="/kb/runtime/solr/example"
 TOT_MEM=`free -m | awk '/Mem:/ { print $2 }'`
 JAVA_MEM=`echo "${TOT_MEM} * 0.8" | bc | cut -f1 -d"."`
 JAVA_OPTIONS="-Xms1024M -Xmx${JAVA_MEM}M -DSTOP.PORT=8079 -DSTOP.KEY=stopkey -jar start.jar"
