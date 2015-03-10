@@ -87,6 +87,7 @@ deploy-service: build-nr build-service
 	chmod +x $(SERVICE_DIR)/stop_service
 	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api --define m5nr_api_port=$(SERVICE_PORT) config/apache.conf.tt > $(BUILDROOT)/etc/apache2/sites-available/default
 	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api --define m5nr_api_port=$(SERVICE_PORT) config/httpd.conf.tt > $(SERVICE_DIR)/conf/httpd.conf
+	$(TPAGE) --define m5nr_dir=$(SERVICE_DIR)/api --define m5nr_api_port=$(SERVICE_PORT) config/apache2.conf.tt > $(SERVICE_DIR)/apache2.conf
 	@echo "restarting apache ..."
 	chmod +x $(SERVICE_DIR)/start_service
 	$(SERVICE_DIR)/stop_service || echo "Ignore"

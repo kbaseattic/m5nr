@@ -12,7 +12,6 @@ else
   [ ! -e ${DIR}/conf/magic ] && [ -e /etc/httpd/conf/magic ] && ln -s /etc/httpd/conf/magic ${DIR}/conf/magic
   [ ! -e ${DIR}/conf/magic ] && [ -e /etc/apache2/magic ] && ln -s /etc/apache2/magic ${DIR}/conf/magic
   [ ! -e ${DIR}/logs ] && mkdir ${DIR}/logs
-  [ ! -e ${DIR}/apache2.conf ] && [ -e /etc/apache2 ] && (grep -v mod_log_config ${DIR}/conf/httpd.conf > ${DIR}/apache2.conf )
   export APACHE_CONFDIR=$DIR
   export APACHE_ULIMIT_MAX_FILES="true"
   /usr/sbin/apachectl -d $DIR -k start
